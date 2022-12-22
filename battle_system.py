@@ -77,16 +77,9 @@ class Battle:
                 print(self.player_team[x])
 
     def main_battle_view(self):
-        # TODO Check if team is still able to fight
-        # self.battle_is_active = False
-        # for x in self.player_team:
-        #     if self.player_team[x].health > 0:
-        #         self.battle_is_active = True
-        #     else:
-        #         break
-
-
         # Shows state of current fighters and loops turns
+        # TODO Check if team is still able to fight at the end of a turn
+
         # Updates and prints the turn number
         self.turn_number += 1
         print(f"Turn: {self.turn_number}")
@@ -117,30 +110,34 @@ class Battle:
         skill_queue.sort(key=itemgetter('speed'), reverse=True)
 
         # resolve moves in the skill queue
-        for x in skill_queue:
-            if x is not None:
-                self.use_move(actor=x['actor'],
-                              move=x['skill_to_use'],
-                              target=x['target'])
+        for skill in skill_queue:
+            if skill is not None:
+                self.use_move(actor=skill['actor'],         # User of the skill
+                              move=skill['skill_to_use'],   # The skill being used
+                              target=skill['target'])       # The target for the skill to be used on
 
-        # TODO end the fighter if there are no more available fighters
-        # TODO switch fighters when health at 0
+        # TODO Solve bug that only lets you switch one fighter even when both have died (Might have to do with changes
+        #  in self.active_fighters/self.inactive_fighters during switch_champion()
         for active_fighter in self.active_fighters:
             if active_fighter.health < 1:
                 print(f"{active_fighter.champion_name} can no longer fight!")
                 self.switch_champion(active_fighter, self.choose_champion_to_switch_to())
 
+
+        # TODO end the fight if there are no more available fighters
+
     def pick_moves(self, fighter):
-        # prints the moves of the fighter from the input
-        print(f"{fighter.champion_name} moves:")
-        for x in fighter.skills:
-            if fighter.skills[x] != "Empty":
-                print(f"{x}. {fighter.skills[x]['name']}")
+        # prints the available skills of the given fighter
+        print(f"{fighter.champion_name} skills:")
+        for known_skill in fighter.skills:
+            if fighter.skills[known_skill] != "Empty":
+                print(f"{known_skill}. {fighter.skills[known_skill]['name']}")
 
         print("[Q] Switch")
         print("[R] Forfeit")
         choose_skill = input(">>> ")
 
+        # Switches fighter instead of using a skill
         if choose_skill.lower() == "q":
             return {
                 "actor": fighter,
@@ -160,7 +157,8 @@ class Battle:
                 }
 
     def choose_target(self):
-        # TODO choose slot instead of object as target.
+        # Prints out the opponent's active fighters and prompt user to select a target. Returns the target.
+        # TODO choose slot instead of object as target. Currently returns an object
         print("Choose target: ")
         print(f"1. {self.opponent_active_fighters[0].champion_name}")
         print(f"2. {self.opponent_active_fighters[1].champion_name}")
@@ -175,18 +173,20 @@ class Battle:
             self.choose_target()
 
     def use_move(self, actor, move, target):
+        # Applies the damage from the selected move, or switches the fighter.
         if move == "switch":
             self.switch_champion(actor, target)
         # Prints out the actor and subject of the selected move, deals damage, and prints out updated health
         else:
             print(f"{actor.prefix} {actor.champion_name} used {move['name']} against {target.champion_name}")
             target.health -= move["power"]
-            print(target.health)
+            print(f"Current HP: {target.health}")
 
     def switch_champion(self, champ_to_switch, champ_to_switch_to):
         # Switches out given champion and switches in a new one.
 
-        print(f"Switching out: {champ_to_switch.custom_name}[{champ_to_switch.champion_name}] to {champ_to_switch_to.custom_name}[{champ_to_switch_to.champion_name}]")
+        print(
+            f"Switching out: {champ_to_switch.custom_name}[{champ_to_switch.champion_name}] to {champ_to_switch_to.custom_name}[{champ_to_switch_to.champion_name}]")
 
         # create a temp slot to copy the switching champ to, puts in the new choice, and appends the switching champ to
         # inactive fighters
@@ -204,6 +204,9 @@ class Battle:
         # TODO consider using a dict instead of a list for active and inactive fighters.
 
     def choose_champion_to_switch_to(self):
+        # TODO Prevent user from choosing a fainted fighter despite it not appearing in the list.
+        # TODO Add slot number
+        # Prints out champions in the self.inactive_list that are still capable of fighting.
         print("Switch in which champion?")
         for x in self.inactive_fighters:
             if x.health > 0:
@@ -212,14 +215,20 @@ class Battle:
                 except AttributeError:
                     continue
 
+        # Checks if the chosen fighter is in self.inactive_fighters and returns the champion object
+        # TODO user should pick a slot instead of type the whole name. (optionally: Maybe both should be valid options?)
         champ_to_switch_to = input(">>> ")
         for x in self.inactive_fighters:
             if x.champion_name.lower() == champ_to_switch_to.lower():
                 return x
 
-    # AI choices
+# AI choices
 
     def ai_pick_moves(self, ai_fighter):
+        # Ai picks the skill on slot "1" and returns the data.
+        # The returned data is appended to the skill_queue in main_battle_view() for the given fighter
+        # TODO randomize the skill chosen
+
         return {
             "actor": ai_fighter,
             "speed": ai_fighter.speed,
@@ -229,6 +238,7 @@ class Battle:
 
     def ai_choose_target(self):
         # Picks a random target and returns the target chosen.
+        # TODO Make ai prefer targets who'd take critical damage.
         random_slot = randint(0, 1)
         target = self.active_fighters[random_slot]
         return target
@@ -236,8 +246,6 @@ class Battle:
     # Misc
 
     def forfeit(self):
+        # TODO Make the fight end immediately when this option is chosen
         self.battle_is_active = False
 
-    def organize_slots(self):
-        # TODO
-        pass

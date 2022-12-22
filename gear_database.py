@@ -1,4 +1,4 @@
-gear_list= {
+gear_list = {
     "light armor": {
         "name": "light armor",
         "type": "armor",

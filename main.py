@@ -37,8 +37,10 @@ def show_main_menu():
 
 
 def view_team_menu():
+    # Menu when user chooses to view the team.
     team_size = calculate_team_size(team=player_team)
 
+    # Changes the menu to view depending on size of the team
     def print_team():
         print(f"Current team:")
         view_champions_in_team()
@@ -81,6 +83,7 @@ def view_team_menu():
 
 def add_champion(*champions_to_add, team_to_add_to):
     """team_to_add_to expects the team as a list"""
+    # Adds given champion(s) to the given team
     if not champions_to_add:
         print("Which champion would you like to add?")
         champion_to_add = input("\n>>> ").lower()
@@ -107,6 +110,7 @@ def add_champion(*champions_to_add, team_to_add_to):
 
 
 def edit_champion_menu():
+    # Views the champions in player team and prompts user to pick one to edit
     print("Which champion to edit?")
     view_champions_in_team()
     champion_slot_to_edit_input = input(">>> ")
@@ -135,21 +139,25 @@ def edit_champion(champ_key, champ_value):
 
     if user_menu_choice == "1":
         edit_champion_name()
-    elif user_menu_choice == "2":
+    if user_menu_choice == "2":
         pass
-    elif user_menu_choice == "3":
+    if user_menu_choice == "3":
         pass
-    elif user_menu_choice == "4":
+    if user_menu_choice == "4":
         pass
-    elif user_menu_choice == "5":
+    if user_menu_choice == "5":
         delete_champion()
+    if user_menu_choice == "6":
+        pass
+    # TODO Show "invalid input" when anything else is put in
 
 
 def battle():
-    new_battle = Battle(player_team, computer_team)
+    Battle(player_team, computer_team)
 
 
 def view_champions_in_team():
+    # Prints the slot number and the champion's name for each champion in the player's team
     for x in player_team:
         if player_team[x] != "Empty":
             print(f"{x}. {player_team[x].custom_name} ({player_team[x].champion_name})")
@@ -158,6 +166,7 @@ def view_champions_in_team():
 
 
 def calculate_team_size(team):
+    # Returns the size of the given team as an int
     team_size = 0
     for slot in team:
         if team[slot] != "Empty":
@@ -166,6 +175,7 @@ def calculate_team_size(team):
 
 
 def dev_mode():
+    # Temporary function to add customization in game
     add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=player_team)
     add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=computer_team)
 

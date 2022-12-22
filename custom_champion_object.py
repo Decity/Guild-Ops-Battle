@@ -4,6 +4,7 @@ from skills_database import skills
 class CustomChampion:
 
     def __init__(self, champion_template_from_database):
+        # Creates a champion object from the given champion template.
         self.champion_name = champion_template_from_database["name"]
         self.custom_name = ""
         self.prefix = ""
@@ -16,8 +17,6 @@ class CustomChampion:
             "4": "Empty",
         }
         self.item = ""
-
-
 
         self.health_bonus = 0
         self.speed_bonus = 0
@@ -47,6 +46,7 @@ class CustomChampion:
         self.is_finalized = False
 
     def view_champion(self):
+        # Prints the champion's data.
         print(f"Champion   :{self.champion_name}")
         print(f"Type       :{self.type}")
         print(f"Ability    :{self.ability}")
@@ -67,6 +67,7 @@ class CustomChampion:
         print("\n")
 
     def learn_skill(self, skill_name, print_learned_skills=False):
+        # Replaces an empty slot with the given skill.
         for x in self.skills:
             if self.skills[x] == "Empty":
                 self.skills[x] = skills[skill_name]
@@ -75,6 +76,7 @@ class CustomChampion:
                 break
 
     def reset_stats(self, champion_template_from_database):
+        # Resets the stats of a champion to its original form. To be used after combat to remove all boosts/debuffs/etc
         self.health = champion_template_from_database["health"]
         self.speed = champion_template_from_database["speed"]
         self.attack = champion_template_from_database["attack"]
