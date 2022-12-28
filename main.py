@@ -176,21 +176,21 @@ def calculate_team_size(team: dict):
 
 def dev_mode():
     # Temporary function to quickly set up teams in game
-    add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=player_team)
-    add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=computer_team)
+    add_champion("rockmister", "rockmister", "scissorsmister", "rocklady", "paperlady", "scissorslady", team_to_add_to=player_team)
+    add_champion("rocklady", "paperlady", "scissorslady", "rockmister", "rockmister", "scissorsmister", team_to_add_to=computer_team)
 
-    for x in player_team:
-        player_team[x].prefix = "your"
-        computer_team[x].prefix = "opponent"
+    for fighter in player_team:
+        player_team[fighter].prefix = "your"
+        computer_team[fighter].prefix = "opponent"
         try:
-            player_team[x].learn_skill("tackle")
-            computer_team[x].learn_skill("tackle")
-            player_team[x].learn_skill("fire")
-            computer_team[x].learn_skill("fire")
-            player_team[x].learn_skill("water")
-            computer_team[x].learn_skill("water")
-            player_team[x].learn_skill("punch")
-            computer_team[x].learn_skill("punch")
+            player_team[fighter].learn_skill("tackle")
+            computer_team[fighter].learn_skill("tackle")
+            player_team[fighter].learn_skill("rock")
+            computer_team[fighter].learn_skill("rock")
+            player_team[fighter].learn_skill("paper")
+            computer_team[fighter].learn_skill("paper")
+            player_team[fighter].learn_skill("scissors")
+            computer_team[fighter].learn_skill("scissors")
         except AttributeError:
             continue
 

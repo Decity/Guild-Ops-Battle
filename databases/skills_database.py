@@ -5,28 +5,22 @@ skills = {
         "type": "normal",
         "target": "single",
     },
-    "punch": {
-        "name": "punch",
+    "rock": {
+        "name": "rock",
         "power": 20,
-        "type": "normal",
+        "type": "rock",
         "target": "single",
     },
-    "fire": {
-        "name": "fire",
+    "paper": {
+        "name": "paper",
         "power": 30,
-        "type": "fire",
+        "type": "paper",
         "target": "single",
     },
-    "water": {
-        "name": "water",
+    "scissors": {
+        "name": "scissors",
         "power": 40,
-        "type": "water",
-        "target": "single",
-    },
-    "thunder": {
-        "name": "thunder",
-        "power": 50,
-        "type": "electric",
+        "type": "scissors",
         "target": "single",
     },
 }

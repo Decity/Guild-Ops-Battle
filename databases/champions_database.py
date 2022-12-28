@@ -1,7 +1,7 @@
 champions_list = {
-    "pikachu": {
-        "name": "Pikachu",
-        "type": "electric",
+    "rockmister": {
+        "name": "Rockmister",
+        "type": "rock",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
@@ -14,9 +14,9 @@ champions_list = {
 
     },
 
-    "squirtle": {
-        "name": "Squirtle",
-        "type": "water",
+    "papermister": {
+        "name": "Papermister",
+        "type": "paper",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
@@ -29,9 +29,9 @@ champions_list = {
 
     },
 
-    "charmander": {
-        "name": "Charmander",
-        "type": "fire",
+    "scissorsmister": {
+        "name": "Scissorsmister",
+        "type": "scissors",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
@@ -44,9 +44,9 @@ champions_list = {
 
     },
 
-    "bulbasaur": {
-        "name": "Bulbasaur",
-        "type": "grass",
+    "rocklady": {
+        "name": "Rocklady",
+        "type": "rock",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
@@ -59,9 +59,9 @@ champions_list = {
 
     },
 
-    "boop": {
-        "name": "Boop",
-        "type": "water",
+    "paperlady": {
+        "name": "Paperlady",
+        "type": "paper",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
@@ -74,9 +74,9 @@ champions_list = {
 
     },
 
-    "bap": {
-        "name": "Bap",
-        "type": "water",
+    "scissors": {
+        "name": "Scissorslady",
+        "type": "scissors",
         "abilities": [],
         "learnable_moves": [],
         "health": 100,
