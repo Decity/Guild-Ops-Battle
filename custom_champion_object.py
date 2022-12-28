@@ -67,11 +67,11 @@ class CustomChampion:
 
     def learn_skill(self, skill_name, print_learned_skills=False):
         # Replaces an empty slot with the given skill.
-        for x in self.skills:
-            if self.skills[x] == "Empty":
-                self.skills[x] = skills[skill_name]
+        for skill in self.skills:
+            if self.skills[skill] == "Empty":
+                self.skills[skill] = skills[skill_name]
                 if print_learned_skills:
-                    print(f"{self.champion_name} learned {skill_name} in slot {x}")
+                    print(f"{self.champion_name} learned {skill_name} in slot {skill}")
                 break
 
     def reset_stats(self, champion_template_from_database):

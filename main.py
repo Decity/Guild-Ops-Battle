@@ -22,9 +22,9 @@ computer_team = {
 
 
 def show_main_menu():
-    print(f"1. Battle")
-    print(f"2. View team")
-    print(f"3. Quit")
+    print("1. Battle")
+    print("2. View team")
+    print("3. Quit")
 
     main_menu_input = input(">>> ")
 
@@ -42,7 +42,7 @@ def view_team_menu():
 
     # Changes the menu to view depending on size of the team
     def print_team():
-        print(f"Current team:")
+        print("Current team:")
         view_champions_in_team()
         print("\n")
 
