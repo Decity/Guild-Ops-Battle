@@ -4,7 +4,7 @@ from operator import itemgetter
 
 class Battle:
 
-    def __init__(self, player_team, opponent_team):
+    def __init__(self, player_team: dict, opponent_team: dict):
         # Creates a battle with the given teams.
         # Loops the main_battle_view() (which views the menu's and status of the fighters)
         self.player_team = player_team
@@ -126,7 +126,7 @@ class Battle:
 
         # TODO end the fight if there are no more available fighters
 
-    def pick_moves(self, fighter):
+    def pick_moves(self, fighter: object) -> dict:
         # prints the available skills of the given fighter
         print(f"{fighter.champion_name} skills:")
         for known_skill in fighter.skills:
@@ -156,7 +156,7 @@ class Battle:
                     "target": self.choose_target(),
                 }
 
-    def choose_target(self):
+    def choose_target(self) -> object:
         # Prints out the opponent's active fighters and prompt user to select a target. Returns the target.
         # TODO choose slot instead of object as target. Currently returns an object
         print("Choose target: ")
@@ -172,7 +172,7 @@ class Battle:
         else:
             self.choose_target()
 
-    def use_move(self, actor, move, target):
+    def use_move(self, actor: object, move: dict, target: dict):
         # Applies the damage from the selected move, or switches the fighter.
         if move == "switch":
             self.switch_champion(actor, target)
@@ -182,7 +182,7 @@ class Battle:
             target.health -= move["power"]
             print(f"Current HP: {target.health}")
 
-    def switch_champion(self, champ_to_switch, champ_to_switch_to):
+    def switch_champion(self, champ_to_switch: object, champ_to_switch_to: object):
         # Switches out given champion and switches in a new one.
 
         print(
@@ -224,7 +224,7 @@ class Battle:
 
 # AI choices
 
-    def ai_pick_moves(self, ai_fighter):
+    def ai_pick_moves(self, ai_fighter: object):
         # Ai picks the skill on slot "1" and returns the data.
         # The returned data is appended to the skill_queue in main_battle_view() for the given fighter
         # TODO randomize the skill chosen

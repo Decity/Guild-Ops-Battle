@@ -81,7 +81,7 @@ def view_team_menu():
         pass
 
 
-def add_champion(*champions_to_add, team_to_add_to):
+def add_champion(*champions_to_add: object, team_to_add_to: dict):
     """team_to_add_to expects the team as a list"""
     # Adds given champion(s) to the given team
     if not champions_to_add:
@@ -120,7 +120,7 @@ def edit_champion_menu():
         edit_champion(champion_slot_to_edit_input, player_team[champion_slot_to_edit_input])
 
 
-def edit_champion(champ_key, champ_value):
+def edit_champion(champ_key: str, champ_value: object):
     def edit_champion_name():
         print("New name: ")
         new_name_input = input(">>> ")
@@ -165,7 +165,7 @@ def view_champions_in_team():
             print(player_team[x])
 
 
-def calculate_team_size(team):
+def calculate_team_size(team: dict):
     # Returns the size of the given team as an int
     team_size = 0
     for slot in team:
