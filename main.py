@@ -1,4 +1,4 @@
-from champions_database import champions_list
+from databases.champions_database import champions_list
 from custom_champion_object import CustomChampion
 from battle_system import Battle
 
@@ -175,7 +175,7 @@ def calculate_team_size(team):
 
 
 def dev_mode():
-    # Temporary function to add customization in game
+    # Temporary function to quickly set up teams in game
     add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=player_team)
     add_champion("bulbasaur", "squirtle", "charmander", "pikachu", "boop", "bap", team_to_add_to=computer_team)
 

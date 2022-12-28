@@ -1,5 +1,4 @@
-from skills_database import skills
-
+from databases.skills_database import skills
 
 class CustomChampion:
 
