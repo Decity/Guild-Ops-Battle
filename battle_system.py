@@ -112,9 +112,9 @@ class Battle:
         # resolve moves in the skill queue
         for skill in skill_queue:
             if skill is not None:
-                self.use_move(actor=skill['actor'],         # User of the skill
-                              move=skill['skill_to_use'],   # The skill being used
-                              target=skill['target'])       # The target for the skill to be used on
+                self.use_move(actor=skill['actor'],  # User of the skill
+                              move=skill['skill_to_use'],  # The skill being used
+                              target=skill['target'])  # The target for the skill to be used on
 
         # TODO Solve bug that only lets you switch one fighter even when both have died (Might have to do with changes
         #  in self.active_fighters/self.inactive_fighters during switch_champion()
@@ -122,7 +122,6 @@ class Battle:
             if active_fighter.health < 1:
                 print(f"{active_fighter.champion_name} can no longer fight!")
                 self.switch_champion(active_fighter, self.choose_champion_to_switch_to())
-
 
         # TODO end the fight if there are no more available fighters
 
@@ -186,7 +185,8 @@ class Battle:
         # Switches out given champion and switches in a new one.
 
         print(
-            f"Switching out: {champ_to_switch.custom_name}[{champ_to_switch.champion_name}] to {champ_to_switch_to.custom_name}[{champ_to_switch_to.champion_name}]")
+            f"Switching out: {champ_to_switch.custom_name}[{champ_to_switch.champion_name}] to "
+            f"{champ_to_switch_to.custom_name}[{champ_to_switch_to.champion_name}]")
 
         # create a temp slot to copy the switching champ to, puts in the new choice, and appends the switching champ to
         # inactive fighters
@@ -222,7 +222,7 @@ class Battle:
             if x.champion_name.lower() == champ_to_switch_to.lower():
                 return x
 
-# AI choices
+    # AI choices
 
     def ai_pick_moves(self, ai_fighter: object):
         # Ai picks the skill on slot "1" and returns the data.
@@ -248,4 +248,3 @@ class Battle:
     def forfeit(self):
         # TODO Make the fight end immediately when this option is chosen
         self.battle_is_active = False
-

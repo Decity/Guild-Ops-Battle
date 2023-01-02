@@ -176,9 +176,9 @@ def calculate_team_size(team: dict):
 def dev_mode():
     # Temporary function to quickly set up teams in game
     add_champion("rockmister", "papermister", "scissorsmister",
-    "rocklady", "paperlady", "scissorslady", team_to_add_to=player_team)
+                 "rocklady", "paperlady", "scissorslady", team_to_add_to=player_team)
     add_champion("rocklady", "paperlady", "scissorslady",
-    "rockmister", "rockmister", "scissorsmister", team_to_add_to=computer_team)
+                 "rockmister", "rockmister", "scissorsmister", team_to_add_to=computer_team)
 
     for fighter in player_team.values():
         fighter.prefix = "your"

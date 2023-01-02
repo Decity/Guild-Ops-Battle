@@ -1,5 +1,6 @@
 from databases.skills_database import skills_database
 
+
 class CustomChampion:
 
     def __init__(self, champion_template_from_database: dict):
@@ -41,7 +42,6 @@ class CustomChampion:
         self.m_defense = champion_template_from_database["m_defense"]
         self.utility = champion_template_from_database["utility"]
 
-
         self.is_finalized = False
 
     def view_champion(self):
@@ -67,20 +67,17 @@ class CustomChampion:
 
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
 
-
         # Replaces an empty slot with the given skill.
         for skill in skills_to_learn:
             if skill not in skills_database:
                 print(f"Skill not available: {skill}")
-            
+
             for slot in self.skills:
                 if self.skills[slot] == "Empty":
                     self.skills[slot] = skills_database[skill]
                     if print_learned_skills:
                         print(f"{self.champion_name} learned {skill} in slot {slot}")
                     break
-              
-  
 
     def reset_stats(self, champion_template_from_database: dict):
         # Resets the stats of a champion to its original form. To be used after combat to remove all boosts/debuffs/etc
