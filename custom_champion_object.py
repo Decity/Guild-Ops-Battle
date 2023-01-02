@@ -1,4 +1,4 @@
-from databases.skills_database import skills
+from databases.skills_database import skills_database
 
 class CustomChampion:
 
@@ -50,11 +50,11 @@ class CustomChampion:
         print(f"Type       :{self.type}")
         print(f"Ability    :{self.ability}")
 
-        for skill in self.skills:
-            if self.skills[skill] != "Empty":
-                print(f"{skill}. {self.skills[skill]['name']}")
+        for slot, skill in self.skills.items():
+            if skill != "Empty":
+                print(f"{slot}. {skill}")
             else:
-                print(f"{skill}. {self.skills[skill]}")
+                print(f"{slot}. {skill}")
 
         print(f"health     :{self.health}")
         print(f"speed      :{self.speed}")
@@ -65,14 +65,22 @@ class CustomChampion:
         print(f"utility    :{self.utility}")
         print("\n")
 
-    def learn_skill(self, skill_name: str, print_learned_skills: bool = False):
+    def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
+
+
         # Replaces an empty slot with the given skill.
-        for skill in self.skills:
-            if self.skills[skill] == "Empty":
-                self.skills[skill] = skills[skill_name]
-                if print_learned_skills:
-                    print(f"{self.champion_name} learned {skill_name} in slot {skill}")
-                break
+        for skill in skills_to_learn:
+            if skill not in skills_database:
+                print(f"Skill not available: {skill}")
+            
+            for slot in self.skills:
+                if self.skills[slot] == "Empty":
+                    self.skills[slot] = skills_database[skill]
+                    if print_learned_skills:
+                        print(f"{self.champion_name} learned {skill} in slot {slot}")
+                    break
+              
+  
 
     def reset_stats(self, champion_template_from_database: dict):
         # Resets the stats of a champion to its original form. To be used after combat to remove all boosts/debuffs/etc

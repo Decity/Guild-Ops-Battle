@@ -74,7 +74,7 @@ champions_list = {
 
     },
 
-    "scissors": {
+    "scissorslady": {
         "name": "Scissorslady",
         "type": "scissors",
         "abilities": [],

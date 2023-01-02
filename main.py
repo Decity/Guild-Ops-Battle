@@ -82,7 +82,6 @@ def view_team_menu():
 
 
 def add_champion(*champions_to_add: object, team_to_add_to: dict):
-    """team_to_add_to expects the team as a list"""
     # Adds given champion(s) to the given team
     if not champions_to_add:
         print("Which champion would you like to add?")
@@ -158,11 +157,11 @@ def battle():
 
 def view_champions_in_team():
     # Prints the slot number and the champion's name for each champion in the player's team
-    for x in player_team:
-        if player_team[x] != "Empty":
-            print(f"{x}. {player_team[x].custom_name} ({player_team[x].champion_name})")
+    for slot, fighter in player_team.items():
+        if fighter != "Empty":
+            print(f"{slot}. {fighter.custom_name} ({fighter.champion_name})")
         else:
-            print(player_team[x])
+            print(fighter)
 
 
 def calculate_team_size(team: dict):
@@ -176,23 +175,18 @@ def calculate_team_size(team: dict):
 
 def dev_mode():
     # Temporary function to quickly set up teams in game
-    add_champion("rockmister", "rockmister", "scissorsmister", "rocklady", "paperlady", "scissorslady", team_to_add_to=player_team)
-    add_champion("rocklady", "paperlady", "scissorslady", "rockmister", "rockmister", "scissorsmister", team_to_add_to=computer_team)
+    add_champion("rockmister", "papermister", "scissorsmister",
+    "rocklady", "paperlady", "scissorslady", team_to_add_to=player_team)
+    add_champion("rocklady", "paperlady", "scissorslady",
+    "rockmister", "rockmister", "scissorsmister", team_to_add_to=computer_team)
 
-    for fighter in player_team:
-        player_team[fighter].prefix = "your"
-        computer_team[fighter].prefix = "opponent"
-        try:
-            player_team[fighter].learn_skill("tackle")
-            computer_team[fighter].learn_skill("tackle")
-            player_team[fighter].learn_skill("rock")
-            computer_team[fighter].learn_skill("rock")
-            player_team[fighter].learn_skill("paper")
-            computer_team[fighter].learn_skill("paper")
-            player_team[fighter].learn_skill("scissors")
-            computer_team[fighter].learn_skill("scissors")
-        except AttributeError:
-            continue
+    for fighter in player_team.values():
+        fighter.prefix = "your"
+        fighter.learn_skill("tackle", "rock", "paper", "scissors")
+
+    for fighter in computer_team.values():
+        fighter.prefix = "opponent"
+        fighter.learn_skill("tackle", "rock", "paper", "scissors")
 
 
 playing = True
