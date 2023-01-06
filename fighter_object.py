@@ -1,7 +1,7 @@
 from databases.skills_database import skills_database
 
 
-class CustomChampion:
+class Fighter:
 
     def __init__(self, champion_template_from_database: dict):
         # Creates a champion object from the given champion template.
