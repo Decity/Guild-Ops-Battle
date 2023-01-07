@@ -1,4 +1,4 @@
-from new_player_profile import Profile
+from player_profile_object import Profile
 from team_object import Team
 from tools import input_processor
 from fighter_object import Fighter
