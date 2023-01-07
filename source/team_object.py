@@ -1,6 +1,6 @@
 from tools import input_processor
-from fighter_object import Fighter
-from databases.fighters_database import fighters_list
+from source.fighter_object import Fighter
+from source.databases.fighters_database import fighters_list
 
 
 class Team:

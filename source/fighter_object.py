@@ -1,4 +1,4 @@
-from databases.skills_database import skills_list
+from source.databases.skills_database import skills_list
 
 
 class Fighter:

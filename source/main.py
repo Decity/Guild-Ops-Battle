@@ -2,7 +2,7 @@ from player_profile_object import Profile
 from team_object import Team
 from tools import input_processor
 from fighter_object import Fighter
-from databases.fighters_database import fighters_list
+from source.databases.fighters_database import fighters_list
 
 player_profile = Profile("Jimbob")
 

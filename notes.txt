@@ -1,5 +1,5 @@
 Major:
-Battle system.
+Battle system
 
 minor:
 switch champion slots in menus
