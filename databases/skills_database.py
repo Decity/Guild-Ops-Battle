@@ -1,4 +1,4 @@
-skills_database = {
+skills_list = {
     "tackle": {
         "name": "tackle",
         "power": 100,   # This number is high to test out the switching mechanic. # TODO return to a normal value

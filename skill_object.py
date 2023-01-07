@@ -1,10 +1,10 @@
-from databases.skills_database import skills_database
+from databases.skills_database import skills_list
 
 
 class Skill:
 
     def __init__(self, given_skill):
-        self.skill_name = skills_database[given_skill]["name"]
+        self.skill_name = skills_list[given_skill]["name"]
 
         self.user = ""
         self.user_speed = ""

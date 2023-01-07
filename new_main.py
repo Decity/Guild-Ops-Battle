@@ -2,7 +2,7 @@ from new_player_profile import Profile
 from team_object import Team
 from tools import input_processor
 from fighter_object import Fighter
-from databases.champions_database import champions_list
+from databases.fighters_database import fighters_list
 
 player_profile = Profile("Jimbob")
 
@@ -39,7 +39,7 @@ def battle_menu():
             player_chosen_team = player_profile.pick_a_single_team_from_saved_teams()
             if player_chosen_team:
                 player_profile.active_team = player_chosen_team
-                # Commence battle TODO
+                # TODO Commence battle
 
             return
         else:
@@ -50,18 +50,30 @@ def team_menu():
     # This menu shows your teams. After selecting one you can edit or delete it.
     while True:
         team_menu_choice = player_profile.pick_a_single_team_from_saved_teams()
-        if team_menu_choice in player_profile.saved_teams:  # View the chosen team
-            team_menu_choice.view_options_for_team()
+        if team_menu_choice in player_profile.saved_teams:
+            team_menu_choice.view_options_for_team_menu()
         else:
             return
 
 
 def dev_mode():
+    # temporary function to create a team and add two fighters to it for testing
     test_team = Team()
     test_team.team_name = "Test team"
-    test_fighter = Fighter(champions_list["rockmister"])
+    test_fighter = Fighter(fighters_list["rockmister"])
     test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(champions_list["rocklady"])
+    test_fighter = Fighter(fighters_list["rocklady"])
+    test_team.base_team.append(test_fighter)
+    test_fighter = Fighter(fighters_list["papermister"])
+    test_team.base_team.append(test_fighter)
+    test_fighter = Fighter(fighters_list["paperlady"])
+    test_team.base_team.append(test_fighter)
+    test_fighter = Fighter(fighters_list["scissorsmister"])
+    test_team.base_team.append(test_fighter)
+    test_fighter = Fighter(fighters_list["scissorslady"])
+
+    for x in test_team.base_team:
+        x.learn_skill("tackle")
     test_team.base_team.append(test_fighter)
     player_profile.saved_teams.append(test_team)
 

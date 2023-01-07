@@ -1,11 +1,11 @@
-from databases.skills_database import skills_database
+from databases.skills_database import skills_list
 
 
 class Fighter:
 
     def __init__(self, champion_template_from_database: dict):
         # Creates a champion object from the given champion template.
-        self.champion_name = champion_template_from_database["name"]
+        self.fighter_name = champion_template_from_database["name"]
         self.custom_name = ""
         self.prefix = ""
         self.type = champion_template_from_database["type"]
@@ -16,7 +16,11 @@ class Fighter:
             "3": "Empty",
             "4": "Empty",
         }
-        self.item = ""
+        self.gear = {
+            "Weapon": "",
+            "Armor": "",
+            "Trinket": "",
+        }
 
         self.health_bonus = 0
         self.speed_bonus = 0
@@ -44,9 +48,9 @@ class Fighter:
 
         self.is_finalized = False
 
-    def view_champion(self):
+    def view_fighter(self):
         # Prints the champion's data.
-        print(f"Champion   :{self.champion_name}")
+        print(f"Fighter   :{self.fighter_name}")
         print(f"Type       :{self.type}")
         print(f"Ability    :{self.ability}")
 
@@ -65,18 +69,44 @@ class Fighter:
         print(f"utility    :{self.utility}")
         print("\n")
 
+    def view_fighter_edit_menu(self):
+        print("1. Change name")
+        print("2. Change skills")
+        print("3. Change ability")
+        print("4. Change gear")
+        print("[B]. Back\n")
+
+    def change_name(self, name_to_change_to_arg="") -> str:
+        # Changes the name of the fighter with the given arg.
+        # If no arg has been given, prompts the user to write one.
+        # It changes the name of the fighter obj and also returns the new name.
+        if name_to_change_to_arg == "":
+            print("Change name to: ")
+            change_name_prompt = input(">>> ")
+            self.custom_name = change_name_prompt
+        else:
+            self.custom_name = name_to_change_to_arg
+        return self.custom_name
+
+    def change_ability(self):
+        pass  # TODO Print all available abilities -> prompt user to pick one -> Check if its a valid choice,
+        # -> if so, change it
+
+    def change_gear(self):
+        pass  # TODO Print gear options -> show available gear -> equip
+
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
 
         # Replaces an empty slot with the given skill.
         for skill in skills_to_learn:
-            if skill not in skills_database:
+            if skill not in skills_list:
                 print(f"Skill not available: {skill}")
 
             for slot in self.skills:
                 if self.skills[slot] == "Empty":
-                    self.skills[slot] = skills_database[skill]
+                    self.skills[slot] = skills_list[skill]
                     if print_learned_skills:
-                        print(f"{self.champion_name} learned {skill} in slot {slot}")
+                        print(f"{self.fighter_name} learned {skill} in slot {slot}")
                     break
 
     def reset_stats(self, champion_template_from_database: dict):

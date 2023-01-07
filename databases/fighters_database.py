@@ -1,4 +1,4 @@
-champions_list = {
+fighters_list = {
     "rockmister": {
         "name": "Rockmister",
         "type": "rock",

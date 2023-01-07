@@ -1,8 +1,8 @@
-from databases.champions_database import champions_list
-from custom_champion_object import CustomChampion
+from databases.fighters_database import fighters_list
+from fighter_object import Fighter
 from battle_system import Battle
 
-player_name = ""
+
 player_team = {
     "1": "Empty",
     "2": "Empty",
@@ -70,7 +70,7 @@ def view_team_menu():
         view_champions_in_team()
 
         specify_champion_to_view = input("View which champion?\n >>> ")
-        player_team[specify_champion_to_view].view_champion()
+        player_team[specify_champion_to_view].view_fighter()
         view_team_menu()
 
     if view_team_input == "2":  # add champ
@@ -86,8 +86,8 @@ def add_champion(*champions_to_add: object, team_to_add_to: dict):
     if not champions_to_add:
         print("Which champion would you like to add?")
         champion_to_add = input("\n>>> ").lower()
-        if champion_to_add in champions_list:
-            new_champ = CustomChampion(champions_list[champion_to_add])
+        if champion_to_add in fighters_list:
+            new_champ = Fighter(fighters_list[champion_to_add])
             for slot in team_to_add_to:
                 if team_to_add_to[slot] == "Empty":
                     team_to_add_to[slot] = new_champ
@@ -99,7 +99,7 @@ def add_champion(*champions_to_add: object, team_to_add_to: dict):
 
     else:
         for champion_name in champions_to_add:
-            new_champ = CustomChampion(champions_list[champion_name])
+            new_champ = Fighter(fighters_list[champion_name])
             for slot in team_to_add_to:
                 if team_to_add_to[slot] == "Empty":
                     team_to_add_to[slot] = new_champ
@@ -115,7 +115,7 @@ def edit_champion_menu():
     champion_slot_to_edit_input = input(">>> ")
 
     if player_team[champion_slot_to_edit_input] != "Empty":
-        print(f"editing: {player_team[champion_slot_to_edit_input].champion_name}")
+        print(f"editing: {player_team[champion_slot_to_edit_input].fighter_name}")
         edit_champion(champion_slot_to_edit_input, player_team[champion_slot_to_edit_input])
 
 
