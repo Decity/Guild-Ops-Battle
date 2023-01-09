@@ -1,4 +1,5 @@
 from source.databases.skills_database import skills_list
+from tools import input_processor
 
 
 class Fighter:
@@ -11,10 +12,10 @@ class Fighter:
         self.type = champion_template_from_database["type"]
         self.ability = ""
         self.skills = {
-            "1": "Empty",
-            "2": "Empty",
-            "3": "Empty",
-            "4": "Empty",
+            1: "Empty",
+            2: "Empty",
+            3: "Empty",
+            4: "Empty",
         }
         self.gear = {
             "Weapon": "",
@@ -70,11 +71,29 @@ class Fighter:
         print("\n")
 
     def view_fighter_edit_menu(self):
-        print("1. Change name")
-        print("2. Change skills")
-        print("3. Change ability")
-        print("4. Change gear")
+        # Shows the menu for editing a fighter.
+        print("[A]. Change name")
+        print("[S]. Change skills - UNAVAILABLE")
+        print("[D]. Change ability - UNAVAILABLE")
+        print("[F]. Change gear - UNAVAILABLE")
         print("[B]. Back\n")
+
+        # Loops the user input for this menu.
+        while True:
+
+            view_fighter_edit_menu_choice = input_processor()
+
+            if view_fighter_edit_menu_choice == "a":
+                self.change_name()
+                return
+            elif view_fighter_edit_menu_choice == "b":  # TODO add functionality
+                print("unavailable")
+            elif view_fighter_edit_menu_choice == "d":  # TODO add functionality
+                print("unavailable")
+            elif view_fighter_edit_menu_choice == "f":  # TODO add functionality
+                print("unavailable")
+            else:
+                print("Invalid choice")
 
     def change_name(self, name_to_change_to_arg="") -> str:
         # Changes the name of the fighter with the given arg.
@@ -96,7 +115,6 @@ class Fighter:
         pass  # TODO Print gear options -> show available gear -> equip
 
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
-
         # Replaces an empty slot with the given skill.
         for skill in skills_to_learn:
             if skill not in skills_list:

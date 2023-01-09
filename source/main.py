@@ -3,6 +3,7 @@ from team_object import Team
 from tools import input_processor
 from fighter_object import Fighter
 from source.databases.fighters_database import fighters_list
+from battle_object import Battle
 
 player_profile = Profile("Jimbob")
 
@@ -39,6 +40,7 @@ def battle_menu():
             player_chosen_team = player_profile.pick_a_single_team_from_saved_teams()
             if player_chosen_team:
                 player_profile.active_team = player_chosen_team
+                Battle(player_profile.active_team)
                 # TODO Commence battle
 
             return
@@ -60,21 +62,12 @@ def dev_mode():
     # temporary function to create a team and add two fighters to it for testing
     test_team = Team()
     test_team.team_name = "Test team"
-    test_fighter = Fighter(fighters_list["rockmister"])
-    test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(fighters_list["rocklady"])
-    test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(fighters_list["papermister"])
-    test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(fighters_list["paperlady"])
-    test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(fighters_list["scissorsmister"])
-    test_team.base_team.append(test_fighter)
-    test_fighter = Fighter(fighters_list["scissorslady"])
+    fighters_to_add = ["rockmister", "rocklady", "papermister", "paperlady", "scissorsmister", "scissorslady"]
+    for fighter in fighters_to_add:
+        test_fighter = Fighter(fighters_list[fighter])
+        test_fighter.learn_skill("tackle", "rock", "paper", "scissors", print_learned_skills=False)
+        test_team.base_team.append(test_fighter)
 
-    for x in test_team.base_team:
-        x.learn_skill("tackle")
-    test_team.base_team.append(test_fighter)
     player_profile.saved_teams.append(test_team)
 
 

@@ -11,15 +11,11 @@ class Team:
         self.base_team = []
         self.team_banner = ""
 
-        self.active_fighters = []
-        self.fighter_slot_1 = ""
-        self.fighter_slot_2 = ""
-        self.inactive_fighters = []
-        self.fighters_being_switched = []
-        self.incapacitated_fighters = []
-
     def view_options_for_team_menu(self):
         self.view_all_fighters_in_team()
+        print("[A]. Add fighter - UNAVAILABLE)")
+        print("[S]. Select banner - UNAVAILABLE)")
+        print("[D]. Change team name - UNAVAILABLE)")
         print("[B]. Back\n")
 
         user_choice = input_processor()
@@ -40,7 +36,7 @@ class Team:
     def view_all_fighters_in_team(self):
         # Prints the names and slot numbers of the fighters in self.base_team
         for fighter in self.base_team:
-            print(f"{self.base_team.index(fighter)}. {fighter.fighter_name}")
+            print(f"{self.base_team.index(fighter)}. {fighter.custom_name}({fighter.fighter_name})")
 
     def add_fighter_to_team(self, fighter_to_add_arg="") -> object:
         # Adds the given to self.base_team and returns it as an object
@@ -53,7 +49,7 @@ class Team:
     def show_options_for_selected_fighter_menu(self, fighter_object):
         while True:
 
-            print(f"Selected: {fighter_object.fighter_name}")
+            print(f"Selected: {fighter_object.custom_name} ({fighter_object.fighter_name})")
             print("1. View")
             print("2. Edit")
             print("3. Switch - Unavailable")  # TODO
@@ -80,15 +76,6 @@ class Team:
     def calculate_team_size(self) -> int:
         # Returns the number of fighters in the team
         return len(self.base_team)
-
-    def reset_team_to_base(self):
-        # The data here is used only during battles. This function resets this data.
-        self.active_fighters = []
-        self.fighter_slot_1 = ""
-        self.fighter_slot_2 = ""
-        self.inactive_fighters = []
-        self.fighters_being_switched = []
-        self.incapacitated_fighters = []
 
     def save_team(self):
         pass  # TODO Save team with pickle so it can be used in future sessions.
