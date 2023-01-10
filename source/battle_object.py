@@ -7,12 +7,12 @@ class Battle:
 
     def __init__(self, user_team, battle_vs_ai=True):
         self.user_team = user_team.base_team
-        self.active_fighters = []
-        self.fighter_slot_1 = None
-        self.fighter_slot_2 = None
-        self.inactive_fighters = []
-        self.fighters_being_switched = []
-        self.incapacitated_fighters = []
+        self.user_active_fighters = []
+        self.user_fighter_slot_1 = None
+        self.user_fighter_slot_2 = None
+        self.user_inactive_fighters = []
+        self.user_fighters_being_switched = []
+        self.user_incapacitated_fighters = []
 
         if battle_vs_ai:
             self.computer_team = self.user_team
@@ -24,6 +24,8 @@ class Battle:
             self.computer_incapacitated_fighters = []
 
         self.turn = 0
+        self.skill_queue = []
+        self.currently_selected_fighter = None
 
         self.choose_starting_fighters()
         self.main_battle_loop()
@@ -36,8 +38,8 @@ class Battle:
             print("Pick a fighter to go first")
             starter_choice_one = input_processor()
             if starter_choice_one in range(0, len(fighters_to_choose_from)):
-                self.fighter_slot_1 = fighters_to_choose_from.pop(starter_choice_one)
-                self.active_fighters.append(self.fighter_slot_1)
+                self.user_fighter_slot_1 = fighters_to_choose_from.pop(starter_choice_one)
+                self.user_active_fighters.append(self.user_fighter_slot_1)
 
             # FOR THE SECOND FIGHTER. # TODO remove redundancy
             for fighter in fighters_to_choose_from:
@@ -45,42 +47,66 @@ class Battle:
             print("Pick a fighter to go second")
             starter_choice_two = input_processor()
             if starter_choice_two in range(0, len(fighters_to_choose_from)):
-                self.fighter_slot_2 = fighters_to_choose_from.pop(starter_choice_two)
-                self.active_fighters.append(self.fighter_slot_2)
+                self.user_fighter_slot_2 = fighters_to_choose_from.pop(starter_choice_two)
+                self.user_active_fighters.append(self.user_fighter_slot_2)
 
             return
 
     def main_battle_loop(self):
         battle_is_active = True
+        # Updates and prints the turn number, empties the skill queue, and loops the battle
         while battle_is_active:
-            skill_queue = []
-            self.display_state_of_fighters()
-            self.user_turn()
-            self.process_turn()
-            self.battle_log()
+            self.process_round()
 
-    def user_turn(self):
-        for fighter in self.active_fighters:
+    def process_round(self):
+        self.turn += 1
+        print(f"Turn: {self.turn}")
+        self.skill_queue = []
+        self.display_state_of_fighters()
+
+        self.process_user_turn()
+        self.process_skill_queue()
+        # Process attacks
+        # process aftermath
+        # switch fighters
+        # update battle log
+
+    def process_user_turn(self):
+        for fighter in self.user_active_fighters:
+            self.currently_selected_fighter = fighter
             self.display_fighter_battle_options(fighter)
             battle_choice = battle_input_processor(fighter)
             print(battle_choice)
             new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
-            print(new_skill.skill_name)
+            self.skill_queue.append(new_skill)
+
+    def process_skill_queue(self):
+        self.skill_queue.sort(key=lambda x: x.user_speed, reverse=True)
+        for skill in self.skill_queue:
+            print(f"{skill.user.fighter_name} used {skill.skill_name} on {skill.target}")
+            self.process_skill(skill)
+            pass
+        # sort skill queue
+        # loop through attacks, update speeds, targets,
+        pass
+
+    def process_skill(self, skill):
+        self.computer_active_fighters[skill.target].health -= skill.skill_power
+        print(self.computer_active_fighters[skill.target].health)
 
     def display_fighter_battle_options(self, fighter):
         # Display the options for the given fighter.
         print(f"{fighter.custom_name} ({fighter.fighter_name})'s turn:")
         for index_number, skills in fighter.skills.items():
             print(f"{index_number}. {skills['name']}")
-        print("[Q]. use Special - UNAVAILABLE")
-        print("[W]. Use item - UNAVAILABLE ")
+        print("[Q]. use Special - UNAVAILABLE", end=" ")
+        print("[W]. Use item - UNAVAILABLE ",
+              end=" ")
         print("[E]. Switch fighter - UNAVAILABLE")
         print("\n")
 
     def display_state_of_fighters(self):
-        self.turn += 1
-        print(f"Turn: {self.turn}")
-        for fighter in self.active_fighters:
+        for fighter in self.user_active_fighters:
             print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
 
         for fighter in self.computer_active_fighters:
@@ -89,13 +115,19 @@ class Battle:
         print("\n")
 
     def choose_target(self):
-        # TODO temp, fix soon
-        return self.computer_fighter_slot_1
+        # Prints out the targets. Loops until a valid target is chosen
+        # TODO Add a back option
+        # TODO only let the user pick the slot if there is a fighter there.
+        available_targets = self.computer_active_fighters
+        for target in available_targets:
+            print(f"{available_targets.index(target) + 1}. {target.fighter_name}")
+
+        while True:
+            choice = int(input("Target choice: ")) - 1  # TODO
+            if choice == 0 or choice == 1:
+                return choice
 
     def switch_fighter(self):
-        pass
-
-    def process_turn(self):
         pass
 
     def battle_log(self):

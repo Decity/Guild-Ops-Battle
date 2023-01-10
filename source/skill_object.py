@@ -5,23 +5,27 @@ from fighter_object import Fighter
 class Skill:
 
     def __init__(self, fighter, given_skill, target):
-        self.skill_name = given_skill["name"]
+        super().__init__()
 
+        # Data of the skill user
         self.user = fighter
-        self.user_speed = fighter.speed
+        self.user_speed = self.user.speed
+        self.user_power = self.user.attack
 
-        self.targeting_mode = ""  # single, allies, doubles, everyone, etc
-        self.target = target
-
-        self.skill_priority = ""
+        # Data of the base skill
+        self.skill_name = given_skill["name"]
+        self.targeting_mode = "single"  # single, allies, doubles, everyone, etc
+        self.skill_priority = 1
         self.skill_type = given_skill["type"]
         self.skill_phys_or_magic = ""
         self.skill_power = given_skill["power"]
-        self.user_power = fighter.attack
 
-        self.target_type = self.target.type
+        # Target data
+        self.target = int(target)
+        self.target_type = ""
         self.target_defense = ""
 
+        self.skill_is_used = False
 
     def process_dynamic_speeds(self):
         pass
