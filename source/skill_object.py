@@ -5,13 +5,13 @@ from fighter_object import Fighter
 class Skill:
 
     def __init__(self, fighter, given_skill, target):
-        super().__init__()
-
         # Data of the skill user
         self.user = fighter
         self.user_speed = self.user.speed
         self.user_power = self.user.attack
 
+        if given_skill == "switch":
+            given_skill = skills_list["switch"]
         # Data of the base skill
         self.skill_name = given_skill["name"]
         self.targeting_mode = "single"  # single, allies, doubles, everyone, etc

@@ -32,7 +32,8 @@ class Battle:
 
     def choose_starting_fighters(self):
         fighters_to_choose_from = self.user_team
-        while True:
+        picking_fighters = True
+        while picking_fighters:
             for fighter in fighters_to_choose_from:
                 print(f"{fighters_to_choose_from.index(fighter)}. {fighter.custom_name} ({fighter.fighter_name})")
             print("Pick a fighter to go first")
@@ -50,7 +51,12 @@ class Battle:
                 self.user_fighter_slot_2 = fighters_to_choose_from.pop(starter_choice_two)
                 self.user_active_fighters.append(self.user_fighter_slot_2)
 
-            return
+            picking_fighters = False
+
+        # puts the rest of the fighters in self.user_inactive_fighters
+        for fighter in self.user_team:
+            if fighter not in self.user_active_fighters:
+                self.user_inactive_fighters.append(fighter)
 
     def main_battle_loop(self):
         battle_is_active = True
@@ -77,8 +83,11 @@ class Battle:
             self.display_fighter_battle_options(fighter)
             battle_choice = battle_input_processor(fighter)
             print(battle_choice)
-            new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
-            self.skill_queue.append(new_skill)
+            if battle_choice == "e": # TODO
+                self.switch_fighter(fighter, self.choose_ally_to_switch_to())
+            else: # TODO
+                new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
+                self.skill_queue.append(new_skill)
 
     def process_skill_queue(self):
         self.skill_queue.sort(key=lambda x: x.user_speed, reverse=True)
@@ -91,8 +100,12 @@ class Battle:
         pass
 
     def process_skill(self, skill):
-        self.computer_active_fighters[skill.target].health -= skill.skill_power
-        print(self.computer_active_fighters[skill.target].health)
+        if skill.skill_name == "switch":
+
+
+        else:
+            self.computer_active_fighters[skill.target].health -= skill.skill_power
+            print(self.computer_active_fighters[skill.target].health)
 
     def display_fighter_battle_options(self, fighter):
         # Display the options for the given fighter.
@@ -106,6 +119,7 @@ class Battle:
         print("\n")
 
     def display_state_of_fighters(self):
+        # Shows the name and HP of active fighters.
         for fighter in self.user_active_fighters:
             print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
 
@@ -127,8 +141,16 @@ class Battle:
             if choice == 0 or choice == 1:
                 return choice
 
-    def switch_fighter(self):
-        pass
+    def choose_ally_to_switch_to(self):
+        for fighter in self.user_inactive_fighters:
+            print(f"{self.user_inactive_fighters.index(fighter)}. {fighter.custom_name} ({fighter.fighter_name})")
+
+        ally_to_switch_to = input_processor()
+        return ally_to_switch_to
+
+    def switch_fighter(self, fighter_to_switch, fighter_to_switch_to, switching_out_dead_fighter=False):
+        switch_skill = Skill(fighter_to_switch, "switch", fighter_to_switch_to)
+        self.skill_queue.append(switch_skill)
 
     def battle_log(self):
         # keeps a log and description of the battle

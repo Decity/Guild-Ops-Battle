@@ -1,0 +1,25 @@
+round
+turn:
+    for each fighter
+        1. fighter
+        2. skill
+        3. target slot
+
+
+switching:
+2 scenarios.
+
+1user picks switch at start of the turn.
+2user has to switch in new champ to replace a dead one.
+
+1. pick switch at start
+pick ally.
+
+fighting starts,
+fighter switches to ally
+
+2. user replaces dead fighter
+
+end of turn
+choose ally to switch to
+switch immediately
