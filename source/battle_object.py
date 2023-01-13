@@ -7,12 +7,15 @@ class Battle:
 
     def __init__(self, user_team, battle_vs_ai=True):
         self.user_team = user_team.base_team
+
         self.user_active_fighters = []
+        self.user_inactive_fighters = []
+        self.user_incapacitated_fighters = []
+
         self.user_fighter_slot_1 = None
         self.user_fighter_slot_2 = None
-        self.user_inactive_fighters = []
+
         self.user_fighters_being_switched = []
-        self.user_incapacitated_fighters = []
 
         if battle_vs_ai:
             self.computer_team = self.user_team
@@ -64,94 +67,94 @@ class Battle:
         while battle_is_active:
             self.process_round()
 
-    def process_round(self):
-        self.turn += 1
-        print(f"Turn: {self.turn}")
-        self.skill_queue = []
-        self.display_state_of_fighters()
-
-        self.process_user_turn()
-        self.process_skill_queue()
-        # Process attacks
-        # process aftermath
-        # switch fighters
-        # update battle log
-
-    def process_user_turn(self):
-        for fighter in self.user_active_fighters:
-            self.currently_selected_fighter = fighter
-            self.display_fighter_battle_options(fighter)
-            battle_choice = battle_input_processor(fighter)
-            print(battle_choice)
-            if battle_choice == "e": # TODO
-                self.switch_fighter(fighter, self.choose_ally_to_switch_to())
-            else: # TODO
-                new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
-                self.skill_queue.append(new_skill)
-
-    def process_skill_queue(self):
-        self.skill_queue.sort(key=lambda x: x.user_speed, reverse=True)
-        for skill in self.skill_queue:
-            print(f"{skill.user.fighter_name} used {skill.skill_name} on {skill.target}")
-            self.process_skill(skill)
-            pass
-        # sort skill queue
-        # loop through attacks, update speeds, targets,
-        pass
-
-    def process_skill(self, skill):
-        if skill.skill_name == "switch":
-
-
-        else:
-            self.computer_active_fighters[skill.target].health -= skill.skill_power
-            print(self.computer_active_fighters[skill.target].health)
-
-    def display_fighter_battle_options(self, fighter):
-        # Display the options for the given fighter.
-        print(f"{fighter.custom_name} ({fighter.fighter_name})'s turn:")
-        for index_number, skills in fighter.skills.items():
-            print(f"{index_number}. {skills['name']}")
-        print("[Q]. use Special - UNAVAILABLE", end=" ")
-        print("[W]. Use item - UNAVAILABLE ",
-              end=" ")
-        print("[E]. Switch fighter - UNAVAILABLE")
-        print("\n")
-
-    def display_state_of_fighters(self):
-        # Shows the name and HP of active fighters.
-        for fighter in self.user_active_fighters:
-            print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
-
-        for fighter in self.computer_active_fighters:
-            print(f"HP: {fighter.health} | {fighter.custom_name} ({fighter.fighter_name}) ")
-
-        print("\n")
-
-    def choose_target(self):
-        # Prints out the targets. Loops until a valid target is chosen
-        # TODO Add a back option
-        # TODO only let the user pick the slot if there is a fighter there.
-        available_targets = self.computer_active_fighters
-        for target in available_targets:
-            print(f"{available_targets.index(target) + 1}. {target.fighter_name}")
-
-        while True:
-            choice = int(input("Target choice: ")) - 1  # TODO
-            if choice == 0 or choice == 1:
-                return choice
-
-    def choose_ally_to_switch_to(self):
-        for fighter in self.user_inactive_fighters:
-            print(f"{self.user_inactive_fighters.index(fighter)}. {fighter.custom_name} ({fighter.fighter_name})")
-
-        ally_to_switch_to = input_processor()
-        return ally_to_switch_to
-
-    def switch_fighter(self, fighter_to_switch, fighter_to_switch_to, switching_out_dead_fighter=False):
-        switch_skill = Skill(fighter_to_switch, "switch", fighter_to_switch_to)
-        self.skill_queue.append(switch_skill)
-
-    def battle_log(self):
-        # keeps a log and description of the battle
-        pass
+    # def process_round(self):
+    #     self.turn += 1
+    #     print(f"Turn: {self.turn}")
+    #     self.skill_queue = []
+    #     self.display_state_of_fighters()
+    #
+    #     self.process_user_turn()
+    #     self.process_skill_queue()
+    #     # Process attacks
+    #     # process aftermath
+    #     # switch fighters
+    #     # update battle log
+    #
+    # def process_user_turn(self):
+    #     for fighter in self.user_active_fighters:
+    #         self.currently_selected_fighter = fighter
+    #         self.display_fighter_battle_options(fighter)
+    #         battle_choice = battle_input_processor(fighter)
+    #         print(battle_choice)
+    #         if battle_choice == "e": # TODO
+    #             self.switch_fighter(fighter, self.choose_ally_to_switch_to())
+    #         else: # TODO
+    #             new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
+    #             self.skill_queue.append(new_skill)
+    #
+    # def process_skill_queue(self):
+    #     self.skill_queue.sort(key=lambda x: x.user_speed, reverse=True)
+    #     for skill in self.skill_queue:
+    #         print(f"{skill.user.fighter_name} used {skill.skill_name} on {skill.target}")
+    #         self.process_skill(skill)
+    #         pass
+    #     # sort skill queue
+    #     # loop through attacks, update speeds, targets,
+    #     pass
+    #
+    # def process_skill(self, skill):
+    #     if skill.skill_name == "switch":
+    #
+    #
+    #     else:
+    #         self.computer_active_fighters[skill.target].health -= skill.skill_power
+    #         print(self.computer_active_fighters[skill.target].health)
+    #
+    # def display_fighter_battle_options(self, fighter):
+    #     # Display the options for the given fighter.
+    #     print(f"{fighter.custom_name} ({fighter.fighter_name})'s turn:")
+    #     for index_number, skills in fighter.skills.items():
+    #         print(f"{index_number}. {skills['name']}")
+    #     print("[Q]. use Special - UNAVAILABLE", end=" ")
+    #     print("[W]. Use item - UNAVAILABLE ",
+    #           end=" ")
+    #     print("[E]. Switch fighter - UNAVAILABLE")
+    #     print("\n")
+    #
+    # def display_state_of_fighters(self):
+    #     # Shows the name and HP of active fighters.
+    #     for fighter in self.user_active_fighters:
+    #         print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
+    #
+    #     for fighter in self.computer_active_fighters:
+    #         print(f"HP: {fighter.health} | {fighter.custom_name} ({fighter.fighter_name}) ")
+    #
+    #     print("\n")
+    #
+    # def choose_target(self):
+    #     # Prints out the targets. Loops until a valid target is chosen
+    #     # TODO Add a back option
+    #     # TODO only let the user pick the slot if there is a fighter there.
+    #     available_targets = self.computer_active_fighters
+    #     for target in available_targets:
+    #         print(f"{available_targets.index(target) + 1}. {target.fighter_name}")
+    #
+    #     while True:
+    #         choice = int(input("Target choice: ")) - 1  # TODO
+    #         if choice == 0 or choice == 1:
+    #             return choice
+    #
+    # def choose_ally_to_switch_to(self):
+    #     for fighter in self.user_inactive_fighters:
+    #         print(f"{self.user_inactive_fighters.index(fighter)}. {fighter.custom_name} ({fighter.fighter_name})")
+    #
+    #     ally_to_switch_to = input_processor()
+    #     return ally_to_switch_to
+    #
+    # def switch_fighter(self, fighter_to_switch, fighter_to_switch_to, switching_out_dead_fighter=False):
+    #     switch_skill = Skill(fighter_to_switch, "switch", fighter_to_switch_to)
+    #     self.skill_queue.append(switch_skill)
+    #
+    # def battle_log(self):
+    #     # keeps a log and description of the battle
+    #     pass
