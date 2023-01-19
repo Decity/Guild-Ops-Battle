@@ -16,7 +16,7 @@ class Team:
         print("[A]. Add fighter - UNAVAILABLE)")
         print("[S]. Select banner - UNAVAILABLE)")
         print("[D]. Change team name - UNAVAILABLE)")
-        print("[B]. Back\n")
+        print("[B]. Back")
 
         user_choice = input_processor()
         if user_choice in range(0, len(self.base_team) - 1):
@@ -54,7 +54,7 @@ class Team:
             print("2. Edit")
             print("3. Switch - Unavailable")  # TODO
             print("4. Delete - Unavailable")  # TODO
-            print("[B]. Back\n")
+            print("[B]. Back")
 
             fighter_menu_choice = input_processor()
             if fighter_menu_choice == 1:

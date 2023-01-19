@@ -14,7 +14,6 @@ def main_menu():
         print("1. Battle")
         print("2. View team")
         print("3. Quit")
-        print("\n")
 
         main_menu_choice = input_processor()
 
@@ -32,7 +31,7 @@ def battle_menu():
         print("1. Play vs AI")
         print("UNAVAILABLE: 2. Play vs local player")
         print("UNAVAILABLE: 3. Play vs online player")
-        print("[B]. Back\n")
+        print("[B]. Back")
 
         battle_menu_choice = input_processor()
 

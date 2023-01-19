@@ -1,7 +1,7 @@
 def input_processor():
     # checks if input is a digit and returns it as an int.
     while True:
-        print("Make your choice: ")
+        print("\nMake your choice: ")
         user_choice = input(">>> ")
 
         if user_choice.isdigit() or isinstance(user_choice, int):

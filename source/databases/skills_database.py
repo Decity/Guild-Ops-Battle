@@ -1,10 +1,17 @@
 skills_list = {
     "switch": {
         "name": "switch",
-        "power": 0,   # This number is high to test out the switching mechanic. # TODO return to a normal value
+        "power": 0,
         "type": "normal",
         "target": "single",
         "priority": 10,
+    },
+    "item": {
+        "name": "item",
+        "power": 0,
+        "type": "normal",
+        "target": "self",
+        "priority": 9,
     },
     "tackle": {
         "name": "tackle",

@@ -22,6 +22,7 @@ class Fighter:
             "Armor": "",
             "Trinket": "",
         }
+        self.item = "health potion"
 
         self.health_bonus = 0
         self.speed_bonus = 0
