@@ -1,6 +1,8 @@
 from tools import input_processor, battle_input_processor
 from skill_object import Skill
 from copy import deepcopy
+import random
+from time import sleep
 
 
 class Battle:
@@ -106,7 +108,9 @@ class Battle:
         self.display_state_of_fighters()
 
         self.process_user_turn()
+        self.computer_select_random_move()
         self.process_skill_queue()
+        self.process_end_of_round()
 
     def process_user_turn(self):
         # TODO add option to cancel choice and re pick moves
@@ -118,7 +122,7 @@ class Battle:
             while making_choice:
                 battle_choice = battle_input_processor(fighter)
                 print(battle_choice)
-                if battle_choice == "e":  # TODO
+                if battle_choice == "e" and len(self.user_active_fighters) > 0:  # Switch
                     new_switch_skill = Skill(fighter=fighter, given_skill="switch",
                                              target=self.user_active_fighters.index(fighter),
                                              switching_to_fighter=self.choose_ally_to_switch_to())
@@ -136,7 +140,9 @@ class Battle:
         # Then process per skill
         self.skill_queue.sort(key=lambda x: x.skill_priority, reverse=True)
         for skill in self.skill_queue:
-            self.process_skill(skill)
+            sleep(1)
+            if skill.user.health > 0:
+                self.process_skill(skill)
         # TODO update speeds, targets,
 
     def process_skill(self, skill):
@@ -150,25 +156,31 @@ class Battle:
             skill.user.health += 100
 
         if skill.targeting_mode == "single":
-            self.computer_active_fighters[skill.target].health -= skill.skill_power
-            print(f"{skill.user.fighter_name} used {skill.skill_name} on {skill.target}")
-            print(self.computer_active_fighters[skill.target].health)
+            if skill.attacking_side == "computer":
+                self.user_active_fighters[skill.target].health -= skill.skill_power
+                print(f"Opponent {skill.user.fighter_name} used {skill.skill_name} on "
+                      f"{self.user_active_fighters[skill.target].fighter_name}")
+            else:
+                self.computer_active_fighters[skill.target].health -= skill.skill_power
+                print(f"Your {skill.user.fighter_name} used {skill.skill_name} on "
+                      f"{self.computer_active_fighters[skill.target].fighter_name}")
 
     def display_fighter_battle_options(self, fighter):
         # Display the options for the given fighter.
         print(f"{fighter.custom_name} ({fighter.fighter_name})'s turn:")
         for index_number, skills in fighter.skills.items():
+            sleep(0.2)
             print(f"{index_number}. {skills['name']}")
-        # print("[Q]. use Special - UNAVAILABLE", end=" ")
-        # print("[W]. Use item - UNAVAILABLE ",
-        #       end=" ")
+        print("[Q]. use Special - UNAVAILABLE", end=" ")
+        print("[W]. Use item - UNAVAILABLE ",
+              end=" ")
         print("[E]. Switch fighter")
-        print("\n")
         return self  # This hides the "method may be static" warning
 
     def display_state_of_fighters(self):
         # Shows the name and HP of active fighters.
         for fighter in self.user_active_fighters:
+            sleep(0.2)
             print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
 
         for fighter in self.computer_active_fighters:
@@ -200,7 +212,7 @@ class Battle:
         ally_to_switch_to = self.user_inactive_fighters.pop(index_of_ally_to_switch_to)
         return ally_to_switch_to
 
-    def switch_fighters(self, slot_of_fighter_switching_out, fighter_to_switch_to, immediate=False, random=False):
+    def switch_fighters(self, slot_of_fighter_switching_out, fighter_to_switch_to, immediate=False):
         # Takes arg 1 as an index number, arg 2 as a fighter object that's saved in a skill object
         # Copies the active fighter being switched out to inactive_fighters
         # then replaces its slot with the fighter being switched in
@@ -210,14 +222,40 @@ class Battle:
             self.user_inactive_fighters.append(self.user_active_fighters[slot_of_fighter_switching_out])
         self.user_active_fighters[slot_of_fighter_switching_out] = fighter_to_switch_to
 
-    def process_end_of_turn(self):
+    def computer_select_random_move(self):
+        for computer_fighter in self.computer_active_fighters:
+            random_skill_choice = random.randint(1, 4)
+            random_target = random.randint(0, 1)
+            new_skill = Skill(computer_fighter, computer_fighter.skills[random_skill_choice],
+                              random_target, computer_attacking=True)
+            self.skill_queue.append(new_skill)
+
+    def computer_switch_to_ally(self, fighter_to_switch):
+        self.computer_incapacitated_fighters.append(self.computer_active_fighters[fighter_to_switch])
+        fighter_to_switch_in = random.choice(self.computer_inactive_fighters)
+        index_of_fighter_to_switch_in = self.computer_inactive_fighters.index(fighter_to_switch_in)
+        self.computer_active_fighters[fighter_to_switch] = self.computer_inactive_fighters.pop(
+            index_of_fighter_to_switch_in)
+
+    def process_end_of_round(self):
         # process end-of-turn dots
         # Check for end-of-turn skill/passives effects
         # check for deaths
 
         # Check for deaths and switch
         for fighter in self.user_active_fighters:
+            fighter_slot = self.user_active_fighters.index(fighter)
             if fighter.health <= 0:
-                fighter_slot = self.user_active_fighters.index(fighter)
-                self.switch_fighters(fighter_slot, self.choose_ally_to_switch_to(), immediate=True)
+                if len(self.user_inactive_fighters) > 0:
+                    self.switch_fighters(fighter_slot, self.choose_ally_to_switch_to(), immediate=True)
+                elif len(self.user_inactive_fighters) == 0:
+                    self.user_incapacitated_fighters.append(self.user_active_fighters.pop(fighter_slot))
+
+        for fighter in self.computer_active_fighters:
+            computer_fighter_slot = self.computer_active_fighters.index(fighter)
+            if fighter.health <= 0:
+                if len(self.computer_inactive_fighters) > 0:
+                    self.computer_switch_to_ally(computer_fighter_slot)
+                elif len(self.computer_inactive_fighters) == 0:
+                    self.computer_incapacitated_fighters.append(self.computer_active_fighters.pop(computer_fighter_slot))
 

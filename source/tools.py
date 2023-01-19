@@ -21,7 +21,7 @@ def battle_input_processor(fighter):
     # TODO check if input is valid.
     # Checks if user input is valid. If so -> return it
     while True:
-        print(f"What should {fighter.fighter_name} do?")
+        print(f"\nWhat should {fighter.fighter_name} do?")
         user_choice = input(">>> ")
 
         if user_choice.isdigit() or isinstance(user_choice, int):

@@ -4,9 +4,12 @@ from fighter_object import Fighter
 
 class Skill:
 
-    def __init__(self, fighter, given_skill, target, switching_to_fighter=None):
+    def __init__(self, fighter, given_skill, target, switching_to_fighter=None, computer_attacking=False):
         # Data of the skill user
         self.user = fighter
+        self.attacking_side = "player"
+        if computer_attacking:
+            self.attacking_side = "computer"
         self.user_speed = self.user.speed
         self.user_power = self.user.attack
 
