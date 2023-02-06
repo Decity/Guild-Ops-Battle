@@ -1,5 +1,4 @@
 from source.databases.skills_database import skills_list
-from fighter_object import Fighter
 
 
 class Skill:
@@ -38,10 +37,15 @@ class Skill:
 
         self.skill_is_used = False
 
-        ### SWITCHING
+        # SWITCHING
         self.switching_to_fighter = switching_to_fighter
         if given_skill["name"] == "switch":
             self.targeting_mode = "inactive_ally"
+
+        # Skill damage calulation
+        self.multiplier = 1
+        if self.user.type == self.skill_type:
+            self.multiplier += 1
 
     def process_dynamic_speeds(self):
         pass

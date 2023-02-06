@@ -1,0 +1,10 @@
+move
+    A choice during battle a fighter can make, including skills, items, or switching
+
+skill
+    An attack
+
+
+fighter
+    champions/heroes/etc
+
