@@ -67,6 +67,7 @@ def dev_mode():
         test_fighter.learn_skill("tackle", "rock", "paper", "scissors", print_learned_skills=False)
         test_team.base_team.append(test_fighter)
 
+    test_team.base_team[0].change_gear("sword", "heavy armor", "necklace")
     player_profile.saved_teams.append(test_team)
 
 

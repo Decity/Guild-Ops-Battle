@@ -8,4 +8,7 @@ critical_hit_chart = {
     "scissors": {"name": "scissors",
                  "weak_against": "rock",
                  "strong_against": "paper"},
+    "normal": {"name": "normal",
+               "weak_against": "none",
+               "strong_against": "none"},
 }

@@ -3,11 +3,13 @@ from skill_object import Skill
 from copy import deepcopy
 import random
 from time import sleep
+from databases.critical_hit_chart_database import critical_hit_chart
 
 
 class Battle:
 
     def __init__(self, user_team, battle_vs_ai=True):
+        self.battle_is_active = True
         self.user_team = user_team.base_team
 
         self.user_active_fighters = []
@@ -15,13 +17,13 @@ class Battle:
         self.user_incapacitated_fighters = []
 
         if battle_vs_ai:
-            self.computer_team = deepcopy(self.user_team)
+            self.computer_team = deepcopy(self.user_team[3::])
             self.computer_active_fighters = [self.computer_team[0], self.computer_team[1]]
             self.computer_inactive_fighters = [x for x in self.computer_team[2:]]
             self.computer_incapacitated_fighters = []
 
         self.turn = 0
-        self.skill_queue = []
+        self.move_queue = []
 
         self.choose_starting_fighters()
         self.main_battle_loop()
@@ -30,7 +32,7 @@ class Battle:
         # Choose the starting fighters and sort them into the correct lists.
         # User battles with the fighters in self.user_active_fighters.
         # self.user_inactivities_fighters are the fighters that can be switched to.
-        fighters_to_choose_from = self.user_teampicking_fighters = True
+        fighters_to_choose_from = self.user_teampicking_fighters = True # TODO What is this?
 
         # Prints out the fighters you can choose to start with.
         def print_available_fighters():
@@ -80,7 +82,7 @@ class Battle:
                 self.user_inactive_fighters.append(fighter)
 
     def main_battle_loop(self):
-        while True:
+        while self.battle_is_active:
             self.process_round()
 
         # TODO: Add a way to end this loop
@@ -88,13 +90,15 @@ class Battle:
     def process_round(self):
         self.turn += 1
         print(f"Turn: {self.turn}")
-        self.skill_queue = []
+        self.move_queue = []
         self.display_state_of_fighters()
 
         self.user_select_moves()
         self.computer_select_random_move()
         self.process_move_queue()
         self.process_end_of_round()
+        if not self.battle_is_active:
+            return
 
     def user_select_moves(self):
         # TODO add option to cancel choice and re pick moves
@@ -109,11 +113,11 @@ class Battle:
                     new_switch_skill = Skill(fighter=fighter, given_skill="switch",
                                              target=self.user_active_fighters.index(fighter),
                                              switching_to_fighter=self.choose_ally_to_switch_to(), )
-                    self.skill_queue.append(new_switch_skill)
+                    self.move_queue.append(new_switch_skill)
                     break
                 elif battle_choice >= 0 <= 4:
                     new_skill = Skill(fighter, fighter.skills[battle_choice], self.choose_target())
-                    self.skill_queue.append(new_skill)
+                    self.move_queue.append(new_skill)
                     break
                 else:
                     print("Invalid choice")
@@ -121,23 +125,100 @@ class Battle:
     def process_move_queue(self):
         # Sort queue by priority # TODO sort by speed
         # Then process per skill
-        self.skill_queue.sort(key=lambda x: x.skill_priority, reverse=True)
-        for skill in self.skill_queue:
-            sleep(1)
-            if skill.user.health > 0:
-                self.process_skill(skill)  # TODO continue coding here. Remove the new move_processor file.
-        # TODO update speeds, targets,
+        self.move_queue.sort(key=lambda x: x.user_speed, reverse=True)
+        for move in self.move_queue:
+            if move.skill_name == "switch":
+                self.switch_fighters(self.user_active_fighters.index(move.user), move.switching_to_fighter)
+                move.skill_is_used = True
+            if move.skill_name == "item":
+                pass
+            if move.skill_name == "special":
+                pass
+        for skill in self.move_queue:
+            if not skill.skill_is_used:
+                sleep(.5)
+                if skill.user.health > 0:
+                    self.process_skill(skill)  # TODO continue coding here.
+                sleep(.5)
+            # TODO update speeds, targets,
 
     def process_skill(self, skill):
+        # Tries to attack the chosen target, then
+        # applies the damage and effects of skills.
+        # Targets targets ally if target has already been defeated.
+
         if skill.targeting_mode == "single":
+
+            target_slot_index = skill.target
+            target_as_object = self.computer_active_fighters[target_slot_index]
+
             if skill.attacking_side == "computer":
-                self.user_active_fighters[skill.target].health -= skill.skill_power
-                print(f"Opponent {skill.user.fighter_name} used {skill.skill_name} on "
-                      f"{self.user_active_fighters[skill.target].fighter_name}")
+                target_as_object = self.user_active_fighters[target_slot_index]
+
+            # If target has already been defeated, their ally is chosen as the new target
+            if target_as_object.health < 1:
+                new_target_slot_index = (target_slot_index + 1) % 2
+                if skill.attacking_side == "player":
+                    target_as_object = self.computer_active_fighters[new_target_slot_index]
+                elif skill.attacking_side == "computer":
+                    target_as_object = self.user_active_fighters[new_target_slot_index]
+
+            target_name = target_as_object.fighter_name
+            target_type = target_as_object.type
+            target_defense = target_as_object.defense
+            attacker_as_object = skill.user
+            attacker_name = attacker_as_object.fighter_name
+            attacker_type = attacker_as_object.type
+            attacker_power = attacker_as_object.attack
+            attacker_skill_name = skill.skill_name
+            attacker_skill_type = skill.skill_type
+            attacker_skill_power = skill.skill_power
+            attacker_prefix = "your"
+            target_prefix = "opponent"
+
+            if skill.attacking_side == "computer":
+                attacker_prefix = "opponent"
+                target_prefix = "your"
+
+            # If target is already defeated, nothing happens. This is checked after a potential target change from
+            # conditional above.
+            if target_as_object.health <= 0:
+                print(f"No target for {attacker_name}'s {attacker_skill_name}!")
+                return
+
+            # Damage calculation
+            damage = attacker_skill_power * (attacker_power / target_defense)
+            if attacker_type == attacker_skill_type:
+                damage *= 1.5
+            if target_type in critical_hit_chart[attacker_skill_type]["strong_against"]:
+                damage *= 2
+                hit_type = "critical hit!"
+            elif target_type in critical_hit_chart[attacker_skill_type]["weak_against"]:
+                damage *= 0.5
+                hit_type = "ineffective hit!"
             else:
-                self.computer_active_fighters[skill.target].health -= skill.skill_power
-                print(f"Your {skill.user.fighter_name} used {skill.skill_name} on "
-                      f"{self.computer_active_fighters[skill.target].fighter_name}")
+                hit_type = ""
+
+            target_health_pre_attack = target_as_object.health
+            target_as_object.health -= damage
+            print(f"{attacker_prefix} {attacker_name} used {attacker_skill_name} on "
+                  f"{target_name}. {hit_type}({target_health_pre_attack}) -> "
+                  f"({target_as_object.health})")
+            if target_as_object.health <= 0:
+                sleep(0.5)
+                print(f"{target_prefix} {target_name} has been defeated!")
+
+    def process_switch(self):
+        self.switch_fighters()
+
+    def process_item(self):
+        pass
+
+    def process_special(self):
+        pass
+
+    def process_forfeit(self):
+        pass
 
     def display_fighter_moves(self, fighter):
         # Display the options for the given fighter.
@@ -153,12 +234,15 @@ class Battle:
 
     def display_state_of_fighters(self):
         # Shows the name and HP of active fighters.
+        print("Player fighters:")
         for fighter in self.user_active_fighters:
             print(f"{fighter.custom_name} ({fighter.fighter_name}) | HP: {fighter.health}")
-            sleep(0.1)
+            sleep(0.2)
 
+        print("Opponent fighters:")
         for fighter in self.computer_active_fighters:
             print(f"HP: {fighter.health} | {fighter.custom_name} ({fighter.fighter_name}) ")
+            sleep(0.2)
 
         print("\n")
 
@@ -175,6 +259,8 @@ class Battle:
             choice = int(input("Target choice: ")) - 1  # TODO: Clause for other inputs
             if choice == 0 or choice == 1:
                 return choice
+            else:
+                print("Invalid choice")
 
     def choose_ally_to_switch_to(self):
         # Prints out all fighters in self.user_inactive_fighters with their slot number
@@ -203,14 +289,20 @@ class Battle:
             random_target = random.randint(0, 1)
             new_skill = Skill(computer_fighter, computer_fighter.skills[random_skill_choice],
                               random_target, computer_attacking=True)
-            self.skill_queue.append(new_skill)
+            self.move_queue.append(new_skill)
 
-    def computer_switch_to_ally(self, fighter_to_switch):
-        self.computer_incapacitated_fighters.append(self.computer_active_fighters[fighter_to_switch])
-        fighter_to_switch_in = random.choice(self.computer_inactive_fighters)
-        index_of_fighter_to_switch_in = self.computer_inactive_fighters.index(fighter_to_switch_in)
-        self.computer_active_fighters[fighter_to_switch] = self.computer_inactive_fighters.pop(
+    def computer_switch_to_ally(self, index_of_fighter_to_switch_out):
+
+        fighter_as_obj_to_switch_in = random.choice(self.computer_inactive_fighters)
+        index_of_fighter_to_switch_in = self.computer_inactive_fighters.index(fighter_as_obj_to_switch_in)
+
+        # Add defeated fighter to incapacitated fighters.
+        self.computer_incapacitated_fighters.append(self.computer_active_fighters[index_of_fighter_to_switch_out])
+        # Pop inactive fighter and add to active fighters.
+        self.computer_active_fighters[index_of_fighter_to_switch_out] = self.computer_inactive_fighters.pop(
             index_of_fighter_to_switch_in)
+
+        print(f"Computer sends in {fighter_as_obj_to_switch_in.fighter_name}")
 
     def process_end_of_round(self):
         # process end-of-turn dots
@@ -221,7 +313,6 @@ class Battle:
         for fighter in self.user_active_fighters:
             fighter_slot = self.user_active_fighters.index(fighter)
             if fighter.health <= 0:
-                print(f"Your fighter {fighter.fighter_name} has been vanquished!")
                 if len(self.user_inactive_fighters) > 0:
                     self.switch_fighters(fighter_slot, self.choose_ally_to_switch_to(), immediate=True)
                 elif len(self.user_inactive_fighters) == 0:
@@ -230,8 +321,6 @@ class Battle:
         for fighter in self.computer_active_fighters:
             computer_fighter_slot = self.computer_active_fighters.index(fighter)
             if fighter.health <= 0:
-                sleep(1)
-                print(f"Opponent {fighter.fighter_name} has been vanquished!")
                 if len(self.computer_inactive_fighters) > 0:
                     self.computer_switch_to_ally(computer_fighter_slot)
                 elif len(self.computer_inactive_fighters) == 0:
@@ -240,5 +329,7 @@ class Battle:
 
         if len(self.user_incapacitated_fighters) == 6:
             print("Computer wins!")
+            self.battle_is_active = False
         if len(self.computer_incapacitated_fighters) == 6:
             print("You win!")
+            self.battle_is_active = False

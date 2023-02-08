@@ -1,4 +1,6 @@
 from source.databases.skills_database import skills_list
+from source.databases.items_database import item_list
+from source.databases.gear_database import gear_list
 from tools import input_processor
 
 
@@ -18,11 +20,11 @@ class Fighter:
             4: "Empty",
         }
         self.gear = {
-            "Weapon": "",
-            "Armor": "",
-            "Trinket": "",
+            "weapon": {},
+            "armor": {},
+            "trinket": {},
         }
-        self.item = "health potion"
+        self.item = item_list["health potion"]
 
         self.health_bonus = 0
         self.speed_bonus = 0
@@ -40,6 +42,7 @@ class Fighter:
         self.m_defense_multiplier = 1
         self.utility_multiplier = 1
 
+        # Stats used in combat
         self.health = champion_template_from_database["health"]
         self.speed = champion_template_from_database["speed"]
         self.attack = champion_template_from_database["attack"]
@@ -49,6 +52,13 @@ class Fighter:
         self.utility = champion_template_from_database["utility"]
 
         self.is_finalized = False
+
+    def process_gear_bonus(self):
+        # TODO clean up this garbage
+        for gear_piece in self.gear.values():
+            self.attack_bonus += gear_piece['attack']
+            self.defense_bonus += gear_piece['defense']
+            self.speed_bonus += gear_piece['speed']
 
     def view_fighter(self):
         # Prints the champion's data.
@@ -62,21 +72,24 @@ class Fighter:
             else:
                 print(f"{slot}. {skill}")
 
-        print(f"health     :{self.health}")
-        print(f"speed      :{self.speed}")
-        print(f"attack     :{self.attack}")
-        print(f"m_attack   :{self.m_attack}")
-        print(f"defense    :{self.defense}")
-        print(f"m_defense  :{self.m_defense}")
-        print(f"utility    :{self.utility}")
+        for item_type, item in self.gear.items():
+            print(f"{item_type}: {item['name']}")
+
+        print(f"health     :{self.health} ({self.health_bonus})")
+        print(f"speed      :{self.speed} ({self.speed_bonus})")
+        print(f"attack     :{self.attack} ({self.attack_bonus})")
+        print(f"m_attack   :{self.m_attack} ({self.m_attack_bonus})")
+        print(f"defense    :{self.defense} ({self.defense_bonus})")
+        print(f"m_defense  :{self.m_defense} ({self.m_defense_bonus})")
+        print(f"utility    :{self.utility} ({self.utility_bonus})")
         print("\n")
 
     def view_fighter_edit_menu(self):
         # Shows the menu for editing a fighter.
         print("[A]. Change name")
-        print("[S]. Change skills - UNAVAILABLE")
-        print("[D]. Change ability - UNAVAILABLE")
-        print("[F]. Change gear - UNAVAILABLE")
+        # print("[S]. Change skills - UNAVAILABLE")
+        # print("[D]. Change ability - UNAVAILABLE")
+        print("[F]. Change gear")
         print("[B]. Back\n")
 
         # Loops the user input for this menu.
@@ -92,7 +105,7 @@ class Fighter:
             elif view_fighter_edit_menu_choice == "d":  # TODO add functionality
                 print("unavailable")
             elif view_fighter_edit_menu_choice == "f":  # TODO add functionality
-                print("unavailable")
+                self.change_gear("sword")
             else:
                 print("Invalid choice")
 
@@ -112,8 +125,20 @@ class Fighter:
         pass  # TODO Print all available abilities -> prompt user to pick one -> Check if its a valid choice,
         # -> if so, change it
 
-    def change_gear(self):
-        pass  # TODO Print gear options -> show available gear -> equip
+    def change_gear(self, *gear_to_equip) -> str:
+        # Change the gear with the given args,
+        # TODO If no args have been given, prompt the user to type their choice.
+        # Returns the name of the of the item as a str
+        equipped_gear = []
+        for gear_piece in gear_to_equip:
+            if gear_piece in gear_list:
+                gear = gear_list[gear_piece]
+                gear_type = gear["type"]
+                gear_name = gear["name"]
+                self.gear[gear_type] = gear
+                equipped_gear.append(gear_name)
+        print(f"Equipped: {equipped_gear}")
+        self.process_gear_bonus()
 
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
         # Replaces an empty slot with the given skill.
@@ -153,3 +178,5 @@ class Fighter:
         self.defense_multiplier = 1
         self.m_defense_multiplier = 1
         self.utility_multiplier = 1
+
+        self.process_gear_bonus()
