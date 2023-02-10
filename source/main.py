@@ -29,8 +29,6 @@ def battle_menu():
     # Loops the menu that shows when battle has been selected
     while True:
         print("1. Play vs AI")
-        print("UNAVAILABLE: 2. Play vs local player")
-        print("UNAVAILABLE: 3. Play vs online player")
         print("[B]. Back")
 
         battle_menu_choice = input_processor()
@@ -40,7 +38,6 @@ def battle_menu():
             if player_chosen_team:
                 player_profile.active_team = player_chosen_team
                 Battle(player_profile.active_team)
-                # TODO Commence battle
 
             return
         else:

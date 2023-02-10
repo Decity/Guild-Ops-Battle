@@ -1,4 +1,4 @@
-from source.databases.skills_database import skills_list
+from source.databases.skills_database import moves_list
 from source.databases.items_database import item_list
 from source.databases.gear_database import gear_list
 from tools import input_processor
@@ -51,12 +51,12 @@ class Fighter:
 
     def update_full_name(self):
         self.full_name = f"{self.prefix} {self.custom_name} ({self.fighter_name})"
+
     def process_gear_bonus(self):
-        # TODO clean up this garbage
         for gear_piece in self.gear.values():
-            self.attack_bonus += gear_piece['attack']
-            self.defense_bonus += gear_piece['defense']
-            self.speed_bonus += gear_piece['speed']
+            self.attack_bonus = gear_piece['attack']
+            self.defense_bonus = gear_piece['defense']
+            self.speed_bonus = gear_piece['speed']
 
     def view_fighter(self):
         # Prints the champion's data.
@@ -82,8 +82,6 @@ class Fighter:
     def view_fighter_edit_menu(self):
         # Shows the menu for editing a fighter.
         print("[A]. Change name")
-        # print("[S]. Change skills - UNAVAILABLE")
-        # print("[D]. Change ability - UNAVAILABLE")
         print("[F]. Change gear")
         print("[B]. Back\n")
 
@@ -95,12 +93,9 @@ class Fighter:
             if view_fighter_edit_menu_choice == "a":
                 self.change_name()
                 return
-            elif view_fighter_edit_menu_choice == "b":  # TODO add functionality
-                print("unavailable")
-            elif view_fighter_edit_menu_choice == "d":  # TODO add functionality
-                print("unavailable")
-            elif view_fighter_edit_menu_choice == "f":  # TODO add functionality
+            elif view_fighter_edit_menu_choice == "f":
                 self.change_gear("sword")
+                return
             else:
                 print("Invalid choice")
 
@@ -116,11 +111,7 @@ class Fighter:
             self.custom_name = name_to_change_to_arg
         return self.custom_name
 
-    def change_ability(self):
-        pass  # TODO Print all available abilities -> prompt user to pick one -> Check if its a valid choice,
-        # -> if so, change it
-
-    def change_gear(self, *gear_to_equip) -> str:
+    def change_gear(self, *gear_to_equip):
         # Change the gear with the given args,
         # TODO If no args have been given, prompt the user to type their choice.
         # Returns the name of the of the item as a str
@@ -138,26 +129,28 @@ class Fighter:
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
         # Replaces an empty slot with the given skill.
         for skill in skills_to_learn:
-            if skill not in skills_list:
+            if skill not in moves_list:
                 print(f"Skill not available: {skill}")
 
             for slot in self.skills:
                 if self.skills[slot] == "Empty":
-                    self.skills[slot] = skills_list[skill]
+                    self.skills[slot] = moves_list[skill]
                     if print_learned_skills:
                         print(f"{self.fighter_name} learned {skill} in slot {slot}")
                     break
 
-    def reset_stats(self, champion_template_from_database: dict):
+    def default_stats(self):
         # Resets the stats of a champion to its original form. To be used after combat to remove all boosts/debuffs/etc
-        self.health = (self.base_health + self.health_bonus) * self.health_multiplier
-        self.speed = (self.base_speed + self.speed_bonus) * self.speed_multiplier
-        self.attack = (self.base_attack + self.health_bonus) * self.health_multiplier
-        self.defense = (self.base_defense + self.defense_bonus) * self.defense_multiplier
 
         self.health_multiplier = 1
         self.speed_multiplier = 1
         self.attack_multiplier = 1
         self.defense_multiplier = 1
 
-        self.process_gear_bonus()
+        self.health = (self.base_health + self.health_bonus) * self.health_multiplier
+        self.speed = (self.base_speed + self.speed_bonus) * self.speed_multiplier
+        self.attack = (self.base_attack + self.health_bonus) * self.health_multiplier
+        self.defense = (self.base_defense + self.defense_bonus) * self.defense_multiplier
+
+
+

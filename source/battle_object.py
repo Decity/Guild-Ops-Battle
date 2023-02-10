@@ -111,7 +111,7 @@ class Battle:
             while True:
                 battle_choice = battle_input_processor(fighter)
                 if battle_choice == "e" and len(self.user_active_fighters) > 0:  # Switch
-                    new_switch_skill = Move(fighter=fighter, given_move="switch",
+                    new_switch_skill = Move(fighter_as_obj=fighter, given_move="switch",
                                             target_index=self.user_active_fighters.index(fighter),
                                             switching_to_fighter=self.choose_ally_to_switch_to(), )
                     self.move_queue.append(new_switch_skill)
@@ -121,7 +121,7 @@ class Battle:
                     self.user_select_moves()
                     break
                 elif battle_choice == "w":  # item
-                    new_item_move = Move(fighter=fighter, given_move='item', target_index=fighter)
+                    new_item_move = Move(fighter_as_obj=fighter, given_move='item', target_index=fighter)
                     self.move_queue.append(new_item_move)
                     break
                 elif battle_choice >= 0 <= 4:  # Skills

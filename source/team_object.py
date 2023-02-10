@@ -9,29 +9,20 @@ class Team:
     def __init__(self):
         self.team_name = ""
         self.base_team = []
-        self.team_banner = ""
 
     def view_options_for_team_menu(self):
         self.view_all_fighters_in_team()
-        print("[A]. Add fighter - UNAVAILABLE)")
-        print("[S]. Select banner - UNAVAILABLE)")
-        print("[D]. Change team name - UNAVAILABLE)")
         print("[B]. Back")
 
-        user_choice = input_processor()
-        if user_choice in range(0, len(self.base_team) - 1):
-            # print(f"{self.base_team[user_choice].fighter_name}") TODO
-            selected_fighter = self.base_team[user_choice]
-            self.show_options_for_selected_fighter_menu(selected_fighter)
-        if user_choice == "z":
-            pass  # TODO add a fighter by typing its name
-        if user_choice == "x":
-            pass  # TODO Select banner
-        if user_choice == "c":
-            pass  # TODO Change team name
-        if user_choice == "b":
-            return
-        # TODO Invalid choice option.
+        while True:
+            user_choice = input_processor()
+            if user_choice in range(0, len(self.base_team) - 1):
+                selected_fighter = self.base_team[user_choice]
+                self.show_options_for_selected_fighter_menu(selected_fighter)
+                break
+            else:
+                print("Invalid choice!")
+            # TODO Invalid choice option.
 
     def view_all_fighters_in_team(self):
         # Prints the names and slot numbers of the fighters in self.base_team
@@ -40,8 +31,6 @@ class Team:
 
     def add_fighter_to_team(self, fighter_to_add_arg="") -> object:
         # Adds the given to self.base_team and returns it as an object
-        # TODO If no fighter was given it prompts the user for a fighter's name
-        # TODO Check if fighter exists
         new_fighter = Fighter(fighters_list[fighter_to_add_arg])
         self.base_team.append(new_fighter)
         return new_fighter
@@ -52,8 +41,6 @@ class Team:
             print(f"Selected: {fighter_object.custom_name} ({fighter_object.fighter_name})")
             print("1. View")
             print("2. Edit")
-            print("3. Switch - Unavailable")  # TODO
-            print("4. Delete - Unavailable")  # TODO
             print("[B]. Back")
 
             fighter_menu_choice = input_processor()
@@ -62,20 +49,4 @@ class Team:
             if fighter_menu_choice == 2:
                 fighter_object.view_fighter_edit_menu()
             if fighter_menu_choice == "b":
-                return
-
-    def switch_fighter_slots_in_team(self):
-        pass
-
-    def delete_fighter_in_team(self):
-        pass
-
-    def edit_banner(self):
-        pass  # TODO print list with banners and let user pick one
-
-    def calculate_team_size(self) -> int:
-        # Returns the number of fighters in the team
-        return len(self.base_team)
-
-    def save_team(self):
-        pass  # TODO Save team with pickle so it can be used in future sessions.
+                return self

@@ -1,4 +1,4 @@
-skills_list = {
+moves_list = {
     "switch": {
         "name": "switch",
         "power": 0,
