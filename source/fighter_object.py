@@ -10,7 +10,8 @@ class Fighter:
         # Creates a champion object from the given champion template.
         self.fighter_name = champion_template_from_database["name"]
         self.custom_name = ""
-        self.prefix = ""
+        self.prefix = "your"
+        self.full_name = f"{self.prefix} {self.custom_name} ({self.fighter_name})"
         self.type = champion_template_from_database["type"]
         self.ability = ""
         self.skills = {
@@ -26,33 +27,30 @@ class Fighter:
         }
         self.item = item_list["health potion"]
 
+        self.base_health = champion_template_from_database["health"]
+        self.base_speed = champion_template_from_database["speed"]
+        self.base_attack = champion_template_from_database["attack"]
+        self.base_defense = champion_template_from_database["defense"]
+
+        # Bonus stats from gear
         self.health_bonus = 0
         self.speed_bonus = 0
         self.attack_bonus = 0
-        self.m_attack_bonus = 0
         self.defense_bonus = 0
-        self.m_defense_bonus = 0
-        self.utility_bonus = 0
 
         self.health_multiplier = 1
         self.speed_multiplier = 1
         self.attack_multiplier = 1
-        self.m_attack_multiplier = 1
         self.defense_multiplier = 1
-        self.m_defense_multiplier = 1
-        self.utility_multiplier = 1
 
         # Stats used in combat
-        self.health = champion_template_from_database["health"]
-        self.speed = champion_template_from_database["speed"]
-        self.attack = champion_template_from_database["attack"]
-        self.m_attack = champion_template_from_database["m_attack"]
-        self.defense = champion_template_from_database["defense"]
-        self.m_defense = champion_template_from_database["m_defense"]
-        self.utility = champion_template_from_database["utility"]
+        self.health = (self.base_health + self.health_bonus) * self.health_multiplier
+        self.speed = (self.base_speed + self.speed_bonus) * self.speed_multiplier
+        self.attack = (self.base_attack + self.health_bonus) * self.health_multiplier
+        self.defense = (self.base_defense + self.defense_bonus) * self.defense_multiplier
 
-        self.is_finalized = False
-
+    def update_full_name(self):
+        self.full_name = f"{self.prefix} {self.custom_name} ({self.fighter_name})"
     def process_gear_bonus(self):
         # TODO clean up this garbage
         for gear_piece in self.gear.values():
@@ -75,13 +73,10 @@ class Fighter:
         for item_type, item in self.gear.items():
             print(f"{item_type}: {item['name']}")
 
-        print(f"health     :{self.health} ({self.health_bonus})")
-        print(f"speed      :{self.speed} ({self.speed_bonus})")
-        print(f"attack     :{self.attack} ({self.attack_bonus})")
-        print(f"m_attack   :{self.m_attack} ({self.m_attack_bonus})")
-        print(f"defense    :{self.defense} ({self.defense_bonus})")
-        print(f"m_defense  :{self.m_defense} ({self.m_defense_bonus})")
-        print(f"utility    :{self.utility} ({self.utility_bonus})")
+        print(f"health     :{self.base_health} ({self.health_bonus})")
+        print(f"speed      :{self.base_speed} ({self.speed_bonus})")
+        print(f"attack     :{self.base_attack} ({self.attack_bonus})")
+        print(f"defense    :{self.base_defense} ({self.defense_bonus})")
         print("\n")
 
     def view_fighter_edit_menu(self):
@@ -155,28 +150,14 @@ class Fighter:
 
     def reset_stats(self, champion_template_from_database: dict):
         # Resets the stats of a champion to its original form. To be used after combat to remove all boosts/debuffs/etc
-        self.health = champion_template_from_database["health"]
-        self.speed = champion_template_from_database["speed"]
-        self.attack = champion_template_from_database["attack"]
-        self.m_attack = champion_template_from_database["m_attack"]
-        self.defense = champion_template_from_database["defense"]
-        self.m_defense = champion_template_from_database["m_defense"]
-        self.utility = champion_template_from_database["utility"]
-
-        self.health_bonus = 0
-        self.speed_bonus = 0
-        self.attack_bonus = 0
-        self.m_attack_bonus = 0
-        self.defense_bonus = 0
-        self.m_defense_bonus = 0
-        self.utility_bonus = 0
+        self.health = (self.base_health + self.health_bonus) * self.health_multiplier
+        self.speed = (self.base_speed + self.speed_bonus) * self.speed_multiplier
+        self.attack = (self.base_attack + self.health_bonus) * self.health_multiplier
+        self.defense = (self.base_defense + self.defense_bonus) * self.defense_multiplier
 
         self.health_multiplier = 1
         self.speed_multiplier = 1
         self.attack_multiplier = 1
-        self.m_attack_multiplier = 1
         self.defense_multiplier = 1
-        self.m_defense_multiplier = 1
-        self.utility_multiplier = 1
 
         self.process_gear_bonus()
