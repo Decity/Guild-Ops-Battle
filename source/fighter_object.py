@@ -1,4 +1,4 @@
-from source.databases.skills_database import moves_list
+from source.databases.moves_database import moves_list
 from source.databases.items_database import item_list
 from source.databases.gear_database import gear_list
 from tools import input_processor
@@ -21,9 +21,9 @@ class Fighter:
             4: "Empty",
         }
         self.gear = {
-            "weapon": {},
-            "armor": {},
-            "trinket": {},
+            "weapon": gear_list['none'],
+            "armor": gear_list['none'],
+            "trinket": gear_list['none'],
         }
         self.item = item_list["health potion"]
 
@@ -114,14 +114,14 @@ class Fighter:
     def change_gear(self, *gear_to_equip):
         # Change the gear with the given args,
         # Returns the name of the of the item as a str
-        gear_to_equip = []
+        list_of_gear_to_equip = []
         for gear_piece in gear_to_equip:
             if gear_piece in gear_list:
                 gear = gear_list[gear_piece]
                 gear_type = gear["type"]
                 gear_name = gear["name"]
                 self.gear[gear_type] = gear
-                gear_to_equip.append(gear_name)
+                list_of_gear_to_equip.append(gear_name)
         print(f"Equipped: {gear_to_equip}")
         self.process_gear_bonus()
 

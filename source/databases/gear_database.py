@@ -1,4 +1,12 @@
 gear_list = {
+    "none": {
+        "name": "none",
+        "type": "armor",
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+
+    },
     "light armor": {
         "name": "light armor",
         "type": "armor",

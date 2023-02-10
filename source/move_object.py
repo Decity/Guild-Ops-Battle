@@ -1,4 +1,4 @@
-from source.databases.skills_database import moves_list
+from source.databases.moves_database import moves_list
 
 
 class Move:
