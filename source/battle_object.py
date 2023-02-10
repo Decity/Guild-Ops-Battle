@@ -39,7 +39,7 @@ class Battle:
         # Prints out the fighters you can choose to start with.
         def print_available_fighters():
             for available_fighter in fighters_to_choose_from:
-                print(f"{fighters_to_choose_from.index(available_fighter)}. {available_fighter.custom_name}"
+                print(f"{fighters_to_choose_from.index(available_fighter) + 1}. {available_fighter.custom_name}"
                       f" ({available_fighter.fighter_name})")
 
         # Main loop for picking both fighters. Continues loop if user doesn't confirm their choice
@@ -52,8 +52,8 @@ class Battle:
             print_available_fighters()
             while True:
                 starter_choice_one = input_processor()
-                if starter_choice_one in range(0, len(fighters_to_choose_from)):
-                    fighter_to_add = fighters_to_choose_from.pop(starter_choice_one)
+                if starter_choice_one in range(1, len(fighters_to_choose_from)+1):
+                    fighter_to_add = fighters_to_choose_from.pop(starter_choice_one - 1)
                     self.user_active_fighters.append(fighter_to_add)
                     break
                 else:
@@ -64,8 +64,8 @@ class Battle:
             print_available_fighters()
             while True:
                 starter_choice_two = input_processor()
-                if starter_choice_two in range(0, len(fighters_to_choose_from)):
-                    fighter_to_add = fighters_to_choose_from.pop(starter_choice_two)
+                if starter_choice_two in range(1, len(fighters_to_choose_from)+1):
+                    fighter_to_add = fighters_to_choose_from.pop(starter_choice_two - 1)
                     self.user_active_fighters.append(fighter_to_add)
                     break
                 else:
@@ -87,8 +87,6 @@ class Battle:
     def main_battle_loop(self):
         while self.battle_is_active:
             self.process_round()
-
-        # TODO: Add a way to end this loop
 
     def process_round(self):
         self.turn += 1
@@ -132,9 +130,9 @@ class Battle:
                     print("Invalid choice")
 
     def process_move_queue(self):
-        # Sort queue by priority # TODO sort by speed
-        # Then process per skill
-        self.move_queue.sort(key=lambda x: x.user_speed, reverse=True)
+        # Sort queue by priority and speed
+        # Then processes each move
+        self.move_queue.sort(key=lambda x: (x.skill_priority, x.user_speed), reverse=True)
         for move in self.move_queue:
             if move.move_name == "switch":
                 self.process_switch(self.user_active_fighters.index(move.move_user), move.switching_to_fighter)
@@ -148,14 +146,13 @@ class Battle:
             if not skill.move_is_used:
                 sleep(.5)
                 if skill.move_user.health > 0:
-                    self.process_skill(skill)  # TODO continue coding here.
+                    self.process_skill(skill)
                 sleep(.5)
-            # TODO update speeds, targets,
 
     def process_skill(self, skill):
         # Tries to attack the chosen target, then
         # applies the damage and effects of skills.
-        # Targets targets ally if target has already been defeated.
+        # Targets ally if target has already been defeated.
 
         if skill.targeting_mode == "single":
 
@@ -224,10 +221,10 @@ class Battle:
         else:
             self.user_inactive_fighters.append(self.user_active_fighters[index_active_fighter_switching_out])
         self.user_active_fighters[index_active_fighter_switching_out] = fighter_obj_to_switch_to
+        print("switched")
 
     def process_item(self, fighter_index):
-        # currently only supports the health potion
-        # TODO consume potion on use
+        # currently only supports the health potion and does not consume it.
 
         self.user_active_fighters[fighter_index].health += self.user_active_fighters[fighter_index].item['potency']
 

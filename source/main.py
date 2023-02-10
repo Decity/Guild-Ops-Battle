@@ -5,7 +5,7 @@ from fighter_object import Fighter
 from source.databases.fighters_database import fighters_list
 from battle_object import Battle
 
-player_profile = Profile("Jimbob")
+player_profile = Profile("test_player")
 
 
 def main_menu():
@@ -38,7 +38,6 @@ def battle_menu():
             if player_chosen_team:
                 player_profile.active_team = player_chosen_team
                 Battle(player_profile.active_team)
-
             return
         else:
             return

@@ -113,17 +113,16 @@ class Fighter:
 
     def change_gear(self, *gear_to_equip):
         # Change the gear with the given args,
-        # TODO If no args have been given, prompt the user to type their choice.
         # Returns the name of the of the item as a str
-        equipped_gear = []
+        gear_to_equip = []
         for gear_piece in gear_to_equip:
             if gear_piece in gear_list:
                 gear = gear_list[gear_piece]
                 gear_type = gear["type"]
                 gear_name = gear["name"]
                 self.gear[gear_type] = gear
-                equipped_gear.append(gear_name)
-        print(f"Equipped: {equipped_gear}")
+                gear_to_equip.append(gear_name)
+        print(f"Equipped: {gear_to_equip}")
         self.process_gear_bonus()
 
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):

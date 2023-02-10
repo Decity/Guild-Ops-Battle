@@ -9,6 +9,7 @@ class Move:
 
         # Data of the skill user
         self.move_user = fighter_as_obj
+        self.user_speed = self.move_user.base_speed
 
         # set move user side
         self.attacking_side = "player"

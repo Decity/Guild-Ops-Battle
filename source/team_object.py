@@ -16,18 +16,17 @@ class Team:
 
         while True:
             user_choice = input_processor()
-            if user_choice in range(0, len(self.base_team) - 1):
-                selected_fighter = self.base_team[user_choice]
+            if user_choice in range(1, len(self.base_team)):
+                selected_fighter = self.base_team[user_choice - 1]
                 self.show_options_for_selected_fighter_menu(selected_fighter)
                 break
             else:
                 print("Invalid choice!")
-            # TODO Invalid choice option.
 
     def view_all_fighters_in_team(self):
         # Prints the names and slot numbers of the fighters in self.base_team
         for fighter in self.base_team:
-            print(f"{self.base_team.index(fighter)}. {fighter.custom_name}({fighter.fighter_name})")
+            print(f"{self.base_team.index(fighter) + 1}. {fighter.custom_name}({fighter.fighter_name})")
 
     def add_fighter_to_team(self, fighter_to_add_arg="") -> object:
         # Adds the given to self.base_team and returns it as an object
