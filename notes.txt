@@ -1,6 +1,0 @@
-Major:
-Battle system
-
-minor:
-switch champion slots in menus
-change name, gear, items
