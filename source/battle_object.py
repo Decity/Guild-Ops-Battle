@@ -52,7 +52,7 @@ class Battle:
             print_available_fighters()
             while True:
                 starter_choice_one = input_processor()
-                if starter_choice_one in range(1, len(fighters_to_choose_from)+1):
+                if starter_choice_one in range(1, len(fighters_to_choose_from) + 1):
                     fighter_to_add = fighters_to_choose_from.pop(starter_choice_one - 1)
                     self.user_active_fighters.append(fighter_to_add)
                     break
@@ -64,7 +64,7 @@ class Battle:
             print_available_fighters()
             while True:
                 starter_choice_two = input_processor()
-                if starter_choice_two in range(1, len(fighters_to_choose_from)+1):
+                if starter_choice_two in range(1, len(fighters_to_choose_from) + 1):
                     fighter_to_add = fighters_to_choose_from.pop(starter_choice_two - 1)
                     self.user_active_fighters.append(fighter_to_add)
                     break
@@ -150,66 +150,61 @@ class Battle:
                 sleep(.5)
 
     def process_skill(self, skill):
-        # Tries to attack the chosen target, then
-        # applies the damage and effects of skills.
-        # Targets ally if target has already been defeated.
+        # Confirms the target and then applies the damage
+        target_as_object = self.confirm_target(skill)
+        self.apply_damage(skill, target_as_object)
 
-        if skill.targeting_mode == "single":
+    def confirm_target(self, skill):
+        # checks if the target is alive. If not, targets their ally instead.
+        if skill.attacking_side == "computer":
+            target_as_object = self.user_active_fighters[skill.target_index]
+        else:
+            target_as_object = self.computer_active_fighters[skill.target_index]
 
-            target_slot_index = skill.target_index
+        target_slot_index = skill.target_index
+        if target_as_object.health < 1:
+            new_target_slot_index = (target_slot_index + 1) % 2
+            if skill.attacking_side == "player":
+                target_as_object = self.computer_active_fighters[new_target_slot_index]
+            elif skill.attacking_side == "computer":
+                target_as_object = self.user_active_fighters[new_target_slot_index]
 
-            if skill.attacking_side == "computer":
-                target_as_object = self.user_active_fighters[target_slot_index]
-            else:
-                target_as_object = self.computer_active_fighters[target_slot_index]
+        return target_as_object
 
-            # If target has already been defeated, their ally is chosen as the new target
-            if target_as_object.health < 1:
-                new_target_slot_index = (target_slot_index + 1) % 2
-                if skill.attacking_side == "player":
-                    target_as_object = self.computer_active_fighters[new_target_slot_index]
-                elif skill.attacking_side == "computer":
-                    target_as_object = self.user_active_fighters[new_target_slot_index]
+    def calculate_effectiveness_and_damage(self, skill, target):
+        damage = round(skill.skill_power * (skill.move_user.attack / target.defense))
+        if skill.move_user.type == skill.skill_type:
+            damage *= 1.5
+        if target.type in critical_hit_chart[skill.skill_type]["strong_against"]:
+            damage *= 2
+            hit_type = "critical hit!"
+        elif target.type in critical_hit_chart[skill.skill_type]["weak_against"]:
+            damage *= 0.5
+            hit_type = "ineffective hit!"
+        else:
+            hit_type = ""
+        return damage, hit_type, self  # fix this or Stijn will be sad
 
-            target_name = target_as_object.full_name
-            target_type = target_as_object.type
-            target_defense = target_as_object.defense
+    def apply_damage(self, skill, target):
+        # Applies damage and prints the results.
 
-            attacker_as_object = skill.move_user
-            attacker_name = attacker_as_object.full_name
-            attacker_type = attacker_as_object.type
-            attacker_power = attacker_as_object.attack
-            attacker_skill_name = skill.move_name
-            attacker_skill_type = skill.skill_type
-            attacker_skill_power = skill.skill_power
+        # Damage calculation
+        damage = self.calculate_effectiveness_and_damage(skill, target)[0]
+        hit_type = self.calculate_effectiveness_and_damage(skill, target)[1]
 
-            # If target is already defeated, nothing happens. This is checked after a potential target change from
-            # conditional above.
-            if target_as_object.health <= 0:
-                print(f"No target for {attacker_name}'s {attacker_skill_name}!")
-                return
+        if target.health <= 0:
+            print(f"No target for {skill.move_user.full_name}'s {skill.move_name}!")
+            return
 
-            # Damage calculation
-            damage = round(attacker_skill_power * (attacker_power / target_defense), 2)
-            if attacker_type == attacker_skill_type:
-                damage *= 1.5
-            if target_type in critical_hit_chart[attacker_skill_type]["strong_against"]:
-                damage *= 2
-                hit_type = "critical hit!"
-            elif target_type in critical_hit_chart[attacker_skill_type]["weak_against"]:
-                damage *= 0.5
-                hit_type = "ineffective hit!"
-            else:
-                hit_type = ""
+        target_health_pre_attack = target.health
+        target.health -= damage
 
-            target_health_pre_attack = target_as_object.health
-            target_as_object.health -= damage
-            print(f"{attacker_name} used {attacker_skill_name} on "
-                  f"{target_name}. {hit_type}({target_health_pre_attack}) -> "
-                  f"({target_as_object.health})")
-            if target_as_object.health <= 0:
-                sleep(0.5)
-                print(f"{target_name} has been defeated!")
+        print(f"{skill.move_user.full_name} used {skill.move_name} on "
+              f"{target.full_name}. {hit_type}({target_health_pre_attack}) -> "
+              f"({target.health})")
+        if target.health <= 0:
+            sleep(0.5)
+            print(f"{target.full_name} has been defeated!")
 
     def process_switch(self, index_active_fighter_switching_out, fighter_obj_to_switch_to, immediate=False):
         # Takes arg 1 as an index number, arg 2 as a fighter object that's saved in a skill object
@@ -312,22 +307,8 @@ class Battle:
         # check for deaths
 
         # Check for deaths and switch
-        for fighter in self.user_active_fighters:
-            fighter_slot = self.user_active_fighters.index(fighter)
-            if fighter.health <= 0:
-                if len(self.user_inactive_fighters) > 0:
-                    self.process_switch(fighter_slot, self.choose_ally_to_switch_to(), immediate=True)
-                elif len(self.user_inactive_fighters) == 0:
-                    self.user_incapacitated_fighters.append(self.user_active_fighters.pop(fighter_slot))
-
-        for fighter in self.computer_active_fighters:
-            computer_fighter_slot = self.computer_active_fighters.index(fighter)
-            if fighter.health <= 0:
-                if len(self.computer_inactive_fighters) > 0:
-                    self.computer_switch_to_ally(computer_fighter_slot)
-                elif len(self.computer_inactive_fighters) == 0:
-                    self.computer_incapacitated_fighters.append(
-                        self.computer_active_fighters.pop(computer_fighter_slot))
+        self.process_end_of_turn_switches(side="player")
+        self.process_end_of_turn_switches(side="computer")
 
         # Ends the battle if a team has 6 incapacitated fighters
         if len(self.user_incapacitated_fighters) == 6:
@@ -336,6 +317,30 @@ class Battle:
         if len(self.computer_incapacitated_fighters) == 6:
             print("You win!")
             self.battle_is_active = False
+
+    def process_end_of_turn_switches(self, side):
+        if side == "player":
+            active_fighters = self.user_active_fighters
+            inactive_fighters = self.user_inactive_fighters
+            incapacitated_fighters = self.user_incapacitated_fighters
+        else:
+            active_fighters = self.computer_active_fighters
+            inactive_fighters = self.computer_inactive_fighters
+            incapacitated_fighters = self.computer_incapacitated_fighters
+
+        for fighter in active_fighters:
+            fighter_slot = active_fighters.index(fighter)
+            if fighter.health <= 0:
+                if len(inactive_fighters) == 0:
+                    incapacitated_fighters.append(active_fighters.pop(fighter_slot))
+                elif len(inactive_fighters) > 0:
+                    if side == "player":
+                        self.process_switch(fighter_slot, self.choose_ally_to_switch_to(), immediate=True)
+                    else:
+                        incapacitated_fighters.append(active_fighters.pop(fighter_slot))
+
+
+
 
     def calculate_team_size(self, computer_team=False) -> str:
         if computer_team:

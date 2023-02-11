@@ -58,3 +58,13 @@ class Move:
             self.skill_type = given_move["type"]
             self.skill_phys_or_magic = ""
             self.skill_power = given_move["power"]
+
+    def process_targetting(self, fighter_as_obj):
+        pass
+        # if fighter_obj in team a
+        # if skill.target_type = single
+        # target single from active opponents
+        # if skill.target_type = multitarget
+        # target = active opponent1 and 2
+        # if target type = self, target slot = user.fighter obj
+

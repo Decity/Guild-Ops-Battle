@@ -39,8 +39,10 @@ def battle_menu():
                 player_profile.active_team = player_chosen_team
                 Battle(player_profile.active_team)
             return
-        else:
+        elif battle_menu_choice == "b":
             return
+        else:
+            print("Invalid input")
 
 
 def team_menu():
