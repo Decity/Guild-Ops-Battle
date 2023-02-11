@@ -1,4 +1,4 @@
-from source.databases.moves_database import moves_list
+from source.data.moves_data import moves_list
 
 
 class Move:
@@ -6,6 +6,7 @@ class Move:
     def __init__(self, fighter_as_obj, given_move, target_index, switching_to_fighter=None, computer_attacking=False):
 
         self.move_is_used = False
+
 
         # Data of the skill user
         self.move_user = fighter_as_obj
@@ -58,6 +59,8 @@ class Move:
             self.skill_type = given_move["type"]
             self.skill_phys_or_magic = ""
             self.skill_power = given_move["power"]
+
+
 
     def process_targetting(self, fighter_as_obj):
         pass

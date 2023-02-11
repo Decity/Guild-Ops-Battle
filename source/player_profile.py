@@ -1,4 +1,4 @@
-from team_object import Team
+from team import Team
 from tools import input_processor
 
 

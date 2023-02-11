@@ -1,9 +1,9 @@
-from player_profile_object import Profile
-from team_object import Team
+from player_profile import Profile
+from team import Team
 from tools import input_processor
-from fighter_object import Fighter
-from source.databases.fighters_database import fighters_list
-from battle_object import Battle
+from fighter import Fighter
+from source.data.fighters_data import fighters_list
+from battle import Battle
 
 player_profile = Profile("test_player")
 

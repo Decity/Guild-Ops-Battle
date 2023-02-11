@@ -1,6 +1,6 @@
-from source.databases.moves_database import moves_list
-from source.databases.items_database import item_list
-from source.databases.gear_database import gear_list
+from source.data.moves_data import moves_list
+from source.data.items_data import item_list
+from source.data.gear_data import gear_list
 from tools import input_processor
 
 

@@ -1,9 +1,9 @@
 from tools import input_processor, battle_input_processor
-from move_object import Move
+from move import Move
 from copy import copy, deepcopy
 import random
 from time import sleep
-from databases.critical_hit_chart_database import critical_hit_chart
+from data.critical_hit_charts import critical_hit_chart
 
 
 class Battle:
@@ -38,6 +38,7 @@ class Battle:
 
         # Prints out the fighters you can choose to start with.
         def print_available_fighters():
+            # TODO reduce redundency
             for available_fighter in fighters_to_choose_from:
                 print(f"{fighters_to_choose_from.index(available_fighter) + 1}. {available_fighter.custom_name}"
                       f" ({available_fighter.fighter_name})")
@@ -102,6 +103,7 @@ class Battle:
             return
 
     def user_select_moves(self):
+        # TODO divide it into multiple smaller methods
         # User picks a move for each active fighter.
         # The move is added to self.move_queue and processed later.
         for fighter in self.user_active_fighters:
@@ -220,6 +222,7 @@ class Battle:
 
     def process_item(self, fighter_index):
         # currently only supports the health potion and does not consume it.
+        # TODO add an extra different item (bomb?), and make sure the item is consumed upon use.
 
         self.user_active_fighters[fighter_index].health += self.user_active_fighters[fighter_index].item['potency']
 
@@ -339,9 +342,6 @@ class Battle:
                     else:
                         incapacitated_fighters.append(active_fighters.pop(fighter_slot))
 
-
-
-
     def calculate_team_size(self, computer_team=False) -> str:
         if computer_team:
             team_max = len(self.computer_team)
@@ -350,3 +350,11 @@ class Battle:
             team_max = len(self.user_team)
             team_current = team_max - len(self.user_incapacitated_fighters)
         return f"({team_current}/{team_max})"
+
+    # TODO consider using a different object for AI
+    # TODO split up and make more methods smaller
+    # TODO fix bug at the end of fight for when an empty slot is targeted
+    # TODO make a "targeting brain" method. Maybe in Move? Maybe here?
+    # TODO use json for data
+    # TODO use decorators for the error
+    #
