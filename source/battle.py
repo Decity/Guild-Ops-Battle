@@ -28,8 +28,10 @@ class Battle:
         self.turn = 0
         self.move_queue = []
 
+        print(self.__dict__)
         self.choose_starting_fighters()
         self.main_battle_loop()
+
 
     def choose_starting_fighters(self):
         # Choose the starting fighters and sort them into the correct lists.
@@ -150,6 +152,7 @@ class Battle:
                 if skill.move_user.health > 0:
                     self.process_skill(skill)
                 sleep(.5)
+            # TODO move sleep to proces_skill?
 
     def process_skill(self, skill):
         # Confirms the target and then applies the damage
@@ -158,6 +161,7 @@ class Battle:
 
     def confirm_target(self, skill):
         # checks if the target is alive. If not, targets their ally instead.
+        # TODO split into two
         if skill.attacking_side == "computer":
             target_as_object = self.user_active_fighters[skill.target_index]
         else:
@@ -236,7 +240,7 @@ class Battle:
               end=" ")
         print("[E]. Switch fighter", end=" ")
         print("[B]. Back")
-        return self  # This hides the "method may be static" warning
+        return self  # This hides the "method may be static" warning # TODO use decorator to make Stijn happy
 
     def display_state_of_fighters(self):
         # Shows the name and HP of active fighters.
@@ -346,7 +350,7 @@ class Battle:
         if computer_team:
             team_max = len(self.computer_team)
             team_current = team_max - len(self.computer_incapacitated_fighters)
-        elif not computer_team:
+        else:
             team_max = len(self.user_team)
             team_current = team_max - len(self.user_incapacitated_fighters)
         return f"({team_current}/{team_max})"
