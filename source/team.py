@@ -28,15 +28,15 @@ class Team:
         for fighter in self.base_team:
             print(f"{self.base_team.index(fighter) + 1}. {fighter.custom_name}({fighter.fighter_name})")
 
-    def add_fighter_to_team(self, fighter_to_add_arg="") -> object:
-        # Adds the given to self.base_team and returns it as an object
+    def add_fighter_to_team(self, fighter_to_add_arg) -> object:
+        # Adds the given fighter to self.base_team and returns it as an object
         new_fighter = Fighter(fighters_list[fighter_to_add_arg])
         self.base_team.append(new_fighter)
         return new_fighter
 
     def show_options_for_selected_fighter_menu(self, fighter_object):
+        # After selecting a fighter, loop the user's options for the fighter
         while True:
-
             print(f"Selected: {fighter_object.custom_name} ({fighter_object.fighter_name})")
             print("1. View")
             print("2. Edit")

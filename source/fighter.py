@@ -100,9 +100,8 @@ class Fighter:
                 print("Invalid choice")
 
     def change_name(self, name_to_change_to_arg="") -> str:
-        # Changes the name of the fighter with the given arg.
+        # Changes the name of the fighter with the given arg, and returns the name as a string
         # If no arg has been given, prompts the user to write one.
-        # It changes the name of the fighter obj and also returns the new name.
         if name_to_change_to_arg == "":
             print("Change name to: ")
             change_name_prompt = input(">>> ")
@@ -112,8 +111,7 @@ class Fighter:
         return self.custom_name
 
     def change_gear(self, *gear_to_equip):
-        # Change the gear with the given args,
-        # Returns the name of the of the item as a str
+        # Change the gear of the fighter to the ones given as the argument
         list_of_gear_to_equip = []
         for gear_piece in gear_to_equip:
             if gear_piece in gear_list:
@@ -126,7 +124,7 @@ class Fighter:
         self.process_gear_bonus()
 
     def learn_skill(self, *skills_to_learn: str, print_learned_skills: bool = True):
-        # Replaces an empty slot with the given skill.
+        # Replaces an empty slot with the given skills.
         for skill in skills_to_learn:
             if skill not in moves_list:
                 print(f"Skill not available: {skill}")

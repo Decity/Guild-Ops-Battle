@@ -28,10 +28,8 @@ class Battle:
         self.turn = 0
         self.move_queue = []
 
-        print(self.__dict__)
         self.choose_starting_fighters()
         self.main_battle_loop()
-
 
     def choose_starting_fighters(self):
         # Choose the starting fighters and sort them into the correct lists.
@@ -105,7 +103,6 @@ class Battle:
             return
 
     def user_select_moves(self):
-        # TODO divide it into multiple smaller methods
         # User picks a move for each active fighter.
         # The move is added to self.move_queue and processed later.
         for fighter in self.user_active_fighters:
@@ -273,12 +270,12 @@ class Battle:
     def choose_ally_to_switch_to(self):
         # Prints out all fighters in self.user_inactive_fighters with their slot number
         for fighter in self.user_inactive_fighters:
-            print(f"{self.user_inactive_fighters.index(fighter)}. {fighter.custom_name} ({fighter.fighter_name})")
+            print(f"{self.user_inactive_fighters.index(fighter) + 1}. {fighter.custom_name} ({fighter.fighter_name})")
 
         # Prompts user for index number for a fighter in self.user_inactive_fighters
         # then returns the ally as an object
         index_of_ally_to_switch_to = input_processor()
-        ally_to_switch_to = self.user_inactive_fighters.pop(index_of_ally_to_switch_to)
+        ally_to_switch_to = self.user_inactive_fighters.pop(index_of_ally_to_switch_to - 1)
         return ally_to_switch_to
 
     def computer_select_random_move(self):
@@ -314,8 +311,8 @@ class Battle:
         # check for deaths
 
         # Check for deaths and switch
-        self.process_end_of_turn_switches(side="player")
-        self.process_end_of_turn_switches(side="computer")
+        self.process_end_of_round_switches("player")
+        self.process_end_of_round_switches("computer")
 
         # Ends the battle if a team has 6 incapacitated fighters
         if len(self.user_incapacitated_fighters) == 6:
@@ -325,7 +322,7 @@ class Battle:
             print("You win!")
             self.battle_is_active = False
 
-    def process_end_of_turn_switches(self, side):
+    def process_end_of_round_switches(self, side):
         if side == "player":
             active_fighters = self.user_active_fighters
             inactive_fighters = self.user_inactive_fighters
@@ -358,7 +355,7 @@ class Battle:
     # TODO consider using a different object for AI
     # TODO split up and make more methods smaller
     # TODO fix bug at the end of fight for when an empty slot is targeted
-    # TODO make a "targeting brain" method. Maybe in Move? Maybe here?
+    # TODO Consdering making a "targeting brain" method. Maybe in Move? Maybe here?
     # TODO use json for data
     # TODO use decorators for the error
     #

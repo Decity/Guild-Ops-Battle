@@ -5,8 +5,6 @@ from tools import input_processor
 class Profile:
     def __init__(self, profile_name: str = "Player"):
         self.username = profile_name
-        self.wins_amount = 0
-        self.losses_amount = 0
         self.saved_teams = []
         self.active_team = None
 
