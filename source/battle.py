@@ -227,7 +227,8 @@ class Battle:
 
         self.user_active_fighters[fighter_index].health += self.user_active_fighters[fighter_index].item['potency']
 
-    def display_fighter_moves(self, fighter):
+    @staticmethod
+    def display_fighter_moves(fighter):
         # Display the options for the given fighter.
         print(f"{fighter.full_name}'s turn:")
         for index_number, skills in fighter.skills.items():
@@ -236,8 +237,7 @@ class Battle:
         print("[W]. Use item",
               end=" ")
         print("[E]. Switch fighter", end=" ")
-        print("[B]. Back")
-        return self  # This hides the "method may be static" warning # TODO use decorator to make Stijn happy
+        print("[B]. Back")  # This hides the "method may be static" warning # TODO use decorator to make Stijn happy
 
     def display_state_of_fighters(self):
         # Shows the name and HP of active fighters.

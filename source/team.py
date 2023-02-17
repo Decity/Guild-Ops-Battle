@@ -34,7 +34,8 @@ class Team:
         self.base_team.append(new_fighter)
         return new_fighter
 
-    def show_options_for_selected_fighter_menu(self, fighter_object):
+    @staticmethod
+    def show_options_for_selected_fighter_menu(fighter_object):
         # After selecting a fighter, loop the user's options for the fighter
         while True:
             print(f"Selected: {fighter_object.custom_name} ({fighter_object.fighter_name})")
@@ -48,4 +49,4 @@ class Team:
             if fighter_menu_choice == 2:
                 fighter_object.view_fighter_edit_menu()
             if fighter_menu_choice == "b":
-                return self
+                return
